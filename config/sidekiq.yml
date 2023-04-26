@@ -1,0 +1,5 @@
+:scheduler:
+  :schedule:
+    spawn_monero_rpc_wallets_job:
+      every: ['1m', first_in: '0s']
+      class: SpawnMoneroRpcWalletsJob
