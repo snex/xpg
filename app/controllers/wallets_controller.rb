@@ -25,7 +25,7 @@ class WalletsController < ApplicationController
 
     respond_to do |format|
       if @wallet.save
-        format.html { redirect_to wallet_url(@wallet), notice: 'Wallet was successfully created.' }
+        format.html { redirect_to wallet_url(@wallet), notice: t(:wallet_created) }
         format.json { render :show, status: :created, location: @wallet }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +38,7 @@ class WalletsController < ApplicationController
   def update
     respond_to do |format|
       if @wallet.update(wallet_params)
-        format.html { redirect_to wallet_url(@wallet), notice: 'Wallet was successfully updated.' }
+        format.html { redirect_to wallet_url(@wallet), notice: t(:wallet_updated) }
         format.json { render :show, status: :ok, location: @wallet }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -52,7 +52,7 @@ class WalletsController < ApplicationController
     @wallet.destroy
 
     respond_to do |format|
-      format.html { redirect_to wallets_url, notice: 'Wallet was successfully destroyed.' }
+      format.html { redirect_to wallets_url, notice: t(:wallet_destroyed) }
       format.json { head :no_content }
     end
   end
@@ -66,6 +66,6 @@ class WalletsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def wallet_params
-    params.require(:wallet).permit(:name, :password, :port, :pid)
+    params.require(:wallet).permit(:name, :password, :rpc_creds, :port)
   end
 end

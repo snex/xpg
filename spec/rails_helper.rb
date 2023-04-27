@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 require 'simplecov'
-SimpleCov.start
+SimpleCov.start 'rails' do
+  groups.delete 'Channels'
+  groups.delete 'Jobs'
+  add_group 'Sidekiq Jobs', 'app/sidekiq'
+end
 
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
@@ -35,9 +39,6 @@ rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
 RSpec.configure do |config|
-  # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_path = "#{Rails.root}/spec/fixtures"
-
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.

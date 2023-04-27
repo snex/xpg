@@ -7,16 +7,22 @@ RSpec.describe 'wallets/show' do
     assign(:wallet, Wallet.create!(
                       name: 'Name',
                       password: 'Password',
+                      rpc_creds: 'rpc:pass',
                       port: 2,
                       pid: 3
                     ))
+    render
   end
 
-  it 'renders attributes in <p>' do
-    render
+  it 'renders name' do
     expect(rendered).to match(/Name/)
-    expect(rendered).to match(/Password/)
+  end
+
+  it 'renders port' do
     expect(rendered).to match(/2/)
+  end
+
+  it 'renders pid' do
     expect(rendered).to match(/3/)
   end
 end

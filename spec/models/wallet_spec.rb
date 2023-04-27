@@ -11,6 +11,7 @@ RSpec.describe Wallet do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:name) }
     it { is_expected.to validate_presence_of(:password) }
+    it { is_expected.to validate_presence_of(:rpc_creds) }
     it { is_expected.to validate_presence_of(:port) }
     it { is_expected.to validate_uniqueness_of(:port) }
   end
@@ -42,7 +43,9 @@ RSpec.describe Wallet do
       let(:wallet) { build(:wallet, pid: 1) }
 
       before do
-        allow(File).to receive(:read).with('/proc/1/cmdline').and_return("monero-wallet-rpc --stagenet --daemon-host=some.host --wallet-file=wallets/#{wallet.name} --password=password --rpc-bind-port=#{wallet.port} --tx-notify='/junk'")
+        allow(File).to receive(:read)
+          .with('/proc/1/cmdline')
+          .and_return("monero-wallet-rpc --config-file=wallets/#{wallet.name}.config")
       end
 
       it { is_expected.to be true }

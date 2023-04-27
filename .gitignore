@@ -26,3 +26,7 @@
 
 # xmr wallet files
 /wallets/**
+monero-wallet-rpc.log
+
+# coverage
+/coverage/*

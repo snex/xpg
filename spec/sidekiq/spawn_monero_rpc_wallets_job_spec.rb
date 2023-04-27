@@ -2,5 +2,11 @@
 
 require 'rails_helper'
 RSpec.describe SpawnMoneroRpcWalletsJob, type: :job do
-  pending "add some examples to (or delete) #{__FILE__}"
+  let!(:wallet) { create(:wallet) }
+
+  it 'enqueues a MoneroRpcWalletJob for the wallet' do
+    described_class.new.perform
+
+    expect(MoneroRpcWalletJob).to have_enqueued_sidekiq_job(wallet.id)
+  end
 end

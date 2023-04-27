@@ -30,4 +30,6 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  wallet_created:   'Wallet was successfully created.'
+  wallet_updated:   'Wallet was successfully updated.'
+  wallet_destroyed: 'Wallet was successfully destroyed.'

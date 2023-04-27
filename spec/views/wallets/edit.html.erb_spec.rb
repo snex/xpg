@@ -3,30 +3,28 @@
 require 'rails_helper'
 
 RSpec.describe 'wallets/edit' do
-  let(:wallet) do
-    Wallet.create!(
-      name: 'MyString',
-      password: 'MyString',
-      port: 1,
-      pid: 1
-    )
-  end
+  let(:wallet) { create(:wallet) }
 
   before do
     assign(:wallet, wallet)
+    render
   end
 
-  it 'renders the edit wallet form' do
-    render
-
+  it 'renders the edit wallet form name input' do
     assert_select 'form[action=?][method=?]', wallet_path(wallet), 'post' do
       assert_select 'input[name=?]', 'wallet[name]'
+    end
+  end
 
+  it 'renders the edit wallet form password input' do
+    assert_select 'form[action=?][method=?]', wallet_path(wallet), 'post' do
       assert_select 'input[name=?]', 'wallet[password]'
+    end
+  end
 
+  it 'renders the edit wallet form port input' do
+    assert_select 'form[action=?][method=?]', wallet_path(wallet), 'post' do
       assert_select 'input[name=?]', 'wallet[port]'
-
-      assert_select 'input[name=?]', 'wallet[pid]'
     end
   end
 end

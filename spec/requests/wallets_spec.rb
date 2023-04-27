@@ -19,11 +19,11 @@ RSpec.describe '/wallets' do
   # Wallet. As you add validations to Wallet, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
+    { name: 'wallet', password: 'password', rpc_creds: 'rpc:pass', port: 1 }
   end
 
   let(:invalid_attributes) do
-    skip('Add a hash of attributes invalid for your model')
+    { name: '' }
   end
 
   describe 'GET /index' do
@@ -88,14 +88,14 @@ RSpec.describe '/wallets' do
   describe 'PATCH /update' do
     context 'with valid parameters' do
       let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
+        { name: 'wallet2' }
       end
 
       it 'updates the requested wallet' do
         wallet = Wallet.create! valid_attributes
         patch wallet_url(wallet), params: { wallet: new_attributes }
         wallet.reload
-        skip('Add assertions for updated state')
+        expect(wallet.name).to eq('wallet2')
       end
 
       it 'redirects to the wallet' do
