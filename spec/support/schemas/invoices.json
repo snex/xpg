@@ -1,0 +1,26 @@
+{
+  "type": "array",
+  "contains":  {
+    "type": "object",
+    "required": [
+      "id",
+      "wallet_id",
+      "amount",
+      "external_id",
+      "expires_at",
+      "created_at",
+      "updated_at",
+      "url"
+    ],
+    "properties": {
+      "id":          { "type": "string", "format": "uuid" },
+      "wallet_id":   { "type": "integer" },
+      "amount":      { "type": "integer" },
+      "external_id": { "type": "string" },
+      "expires_at":  { "type": "string", "format": "date-time" },
+      "created_at":  { "type": "string", "format": "date-time" },
+      "updated_at":  { "type": "string", "format": "date-time" },
+      "url":         { "type": "string" }
+    }
+  }
+}

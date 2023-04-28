@@ -73,5 +73,6 @@ group :development do
 end
 
 group :test do
+  gem 'json-schema'
   gem 'rspec-sidekiq'
 end

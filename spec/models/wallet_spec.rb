@@ -5,6 +5,10 @@ require 'rails_helper'
 RSpec.describe Wallet do
   let(:wallet) { build(:wallet) }
 
+  describe 'associations' do
+    it { is_expected.to have_many(:invoices).dependent(:restrict_with_error) }
+  end
+
   describe 'validations' do
     subject { wallet }
 

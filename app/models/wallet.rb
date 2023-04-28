@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Wallet < ApplicationRecord
+  has_many :invoices, dependent: :restrict_with_error
+
   validates :name,         presence: true, uniqueness: true
   validates :password,     presence: true
   validates :port,         presence: true, uniqueness: true
