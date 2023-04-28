@@ -5,11 +5,11 @@ require 'rails_helper'
 RSpec.describe 'wallets/show' do
   before do
     assign(:wallet, Wallet.create!(
-                      name: 'Name',
-                      password: 'Password',
+                      name:      'Name',
+                      password:  'Password',
                       rpc_creds: 'rpc:pass',
-                      port: 2,
-                      pid: 3
+                      port:      2,
+                      pid:       3
                     ))
     render
   end

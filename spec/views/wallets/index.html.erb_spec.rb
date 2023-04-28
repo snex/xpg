@@ -6,18 +6,18 @@ RSpec.describe 'wallets/index' do
   before do
     assign(:wallets, [
              Wallet.create!(
-               name: 'Name 1',
-               password: 'Password',
+               name:      'Name 1',
+               password:  'Password',
                rpc_creds: 'rpc:pass',
-               port: 11_110,
-               pid: 3
+               port:      11_110,
+               pid:       3
              ),
              Wallet.create!(
-               name: 'Name 2',
-               password: 'Password',
+               name:      'Name 2',
+               password:  'Password',
                rpc_creds: 'rpc:pass',
-               port: 11_111,
-               pid: 3
+               port:      11_111,
+               pid:       3
              )
            ])
   end

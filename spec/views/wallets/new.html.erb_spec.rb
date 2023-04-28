@@ -5,10 +5,10 @@ require 'rails_helper'
 RSpec.describe 'wallets/new' do
   before do
     assign(:wallet, Wallet.new(
-                      name: 'MyString',
+                      name:     'MyString',
                       password: 'MyString',
-                      port: 1,
-                      pid: 1
+                      port:     1,
+                      pid:      1
                     ))
     render
   end

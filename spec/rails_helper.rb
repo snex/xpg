@@ -5,6 +5,7 @@ SimpleCov.start 'rails' do
   groups.delete 'Channels'
   groups.delete 'Jobs'
   add_group 'Sidekiq Jobs', 'app/sidekiq'
+  add_group 'Services', 'app/services'
 end
 
 # This file is copied to spec/ when you run 'rails generate rspec:install'

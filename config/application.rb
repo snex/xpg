@@ -33,6 +33,8 @@ module Xpg
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
+    config.monero_wallet_rpc = config_for(:monero_wallet_rpc)
+
     # Don't generate system test files.
     config.generators.system_tests = nil
   end

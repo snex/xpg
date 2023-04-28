@@ -1,12 +1,29 @@
 # frozen_string_literal: true
 
 class Wallet < ApplicationRecord
-  validates :name,      presence: true, uniqueness: true
-  validates :password,  presence: true
-  validates :rpc_creds, presence: true
-  validates :port,      presence: true, uniqueness: true
+  validates :name,         presence: true, uniqueness: true
+  validates :password,     presence: true
+  validates :port,         presence: true, uniqueness: true
 
   encrypts :password, :rpc_creds
+
+  after_initialize :assign_file_service
+  before_create :generate_rpc_creds
+  after_commit :create_rpc_wallet_async!, on: :create
+
+  attr_accessor :file_service
+
+  def create_rpc_wallet!
+    return if ready_to_run?
+
+    file_service.write_config_file!
+    file_service.spawn_wallet_proc!
+  end
+
+  def create_rpc_wallet_file!
+    MoneroRpcService.new(self).create_rpc_wallet
+    update(ready_to_run: true)
+  end
 
   def running?
     return false if pid.blank?
@@ -17,27 +34,29 @@ class Wallet < ApplicationRecord
   end
 
   def run!
-    return if running?
+    return if running? || !ready_to_run?
 
-    write_config_file!
-    pid = spawn("monero-wallet-rpc --config-file=wallets/#{name}.config")
-    update(pid:)
-    Process.detach(pid)
+    file_service.write_config_file!
+    file_service.spawn_wallet_proc!
   end
 
   private
 
-  def write_config_file!
-    File.open("wallets/#{name}.config", 'w') do |f|
-      f.puts 'stagenet=true'
-      f.puts 'daemon-host=stagenet.community.rino.io'
-      f.puts "wallet-file=wallets/#{name}"
-      f.puts "password=#{password}"
-      f.puts "rpc-login=#{rpc_creds}"
-      f.puts "rpc-bind-port=#{port}"
-      f.puts "tx-notify=/home/snex/github/xpg/process_tx.sh #{id} %s"
-    end
+  def assign_file_service
+    self.file_service = if ready_to_run?
+                          WalletFileService::RpcWalletFileService.new(self)
+                        else
+                          WalletFileService::CreateWalletFileService.new(self)
+                        end
+  end
 
-    FileUtils.chmod('u=rw', "wallets/#{name}.config")
+  def generate_rpc_creds
+    user = SecureRandom.hex
+    pass = SecureRandom.hex
+    self.rpc_creds = "#{user}:#{pass}"
+  end
+
+  def create_rpc_wallet_async!
+    SpawnCreateRpcWalletJob.perform_async(id)
   end
 end
