@@ -9,8 +9,8 @@ module WalletFileService
     end
 
     def spawn_wallet_proc!
-      pid = spawn("monero-wallet-rpc --config-file=wallets/#{@wallet.name}.config")
-      CreateRpcWalletJob.perform_async(@wallet.id)
+      pid = Process.spawn("monero-wallet-rpc --config-file=wallets/#{@wallet.name}.config")
+      CreateRpcWalletJob.perform_in(30.seconds, @wallet.id)
       Process.wait2(pid)
     end
   end

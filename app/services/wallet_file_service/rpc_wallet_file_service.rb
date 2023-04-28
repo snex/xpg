@@ -9,7 +9,7 @@ module WalletFileService
     end
 
     def spawn_wallet_proc!
-      pid = spawn("monero-wallet-rpc --config-file=wallets/#{@wallet.name}.config")
+      pid = Process.spawn("monero-wallet-rpc --config-file=wallets/#{@wallet.name}.config")
       @wallet.update(pid: pid)
       Process.detach(pid)
     end
