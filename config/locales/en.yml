@@ -30,6 +30,11 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  wallet_created:   'Wallet was successfully created.'
-  wallet_updated:   'Wallet was successfully updated.'
-  wallet_destroyed: 'Wallet was successfully destroyed.'
+  wallet:
+    created:    'Wallet was successfully created.'
+    updated:    'Wallet was successfully updated.'
+    destroyed:  'Wallet was successfully destroyed.'
+    status:
+      building: 'Building Monero wallet'
+      running:  'Running (pid: %{pid})'
+      error:    'Error'

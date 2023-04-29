@@ -10,5 +10,18 @@ FactoryBot.define do
     sequence :port do |n|
       n + 10_000
     end
+
+    factory :named_wallet do
+      sequence :name do |n|
+        "Name #{n}"
+      end
+      password     { Faker::Internet.password }
+      rpc_creds    { Faker::Internet.password }
+      pid          { nil }
+      ready_to_run { [true, false].sample }
+      sequence :port do |n|
+        n + 10_000
+      end
+    end
   end
 end

@@ -119,8 +119,36 @@ RSpec.describe Wallet do
     end
   end
 
+  describe '#status' do
+    subject { wallet.status }
+
+    context 'when the wallet is running' do
+      before { allow(wallet).to receive(:running?).and_return(true) }
+
+      it { is_expected.to eq(:running) }
+    end
+
+    context 'when the wallet is currently being built' do
+      before do
+        allow(wallet).to receive(:running?).and_return(false)
+        allow(wallet).to receive(:ready_to_run?).and_return(false)
+      end
+
+      it { is_expected.to eq(:building) }
+    end
+
+    context 'when anything else happens' do
+      before do
+        allow(wallet).to receive(:running?).and_return(false)
+        allow(wallet).to receive(:ready_to_run?).and_return(true)
+      end
+
+      it { is_expected.to eq(:error) }
+    end
+  end
+
   describe '#running?' do
-    subject { wallet.running? }
+    subject(:running?) { wallet.running? }
 
     context 'when pid is blank' do
       it { is_expected.to be false }
@@ -132,6 +160,10 @@ RSpec.describe Wallet do
       before { allow(File).to receive(:read).with('/proc/1/cmdline').and_raise(Errno::ENOENT) }
 
       it { is_expected.to be false }
+
+      it 'updates pid to nil' do
+        expect { running? }.to change(wallet, :pid).from(1).to(nil)
+      end
     end
 
     context 'when pid is present but the proc has the wrong details' do

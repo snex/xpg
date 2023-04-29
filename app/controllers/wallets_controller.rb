@@ -25,7 +25,7 @@ class WalletsController < ApplicationController
 
     respond_to do |format|
       if @wallet.save
-        format.html { redirect_to wallet_url(@wallet), notice: t(:wallet_created) }
+        format.html { redirect_to wallet_url(@wallet), notice: t(:'wallet.created') }
         format.json { render :show, status: :created, location: @wallet }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +38,7 @@ class WalletsController < ApplicationController
   def update
     respond_to do |format|
       if @wallet.update(wallet_params)
-        format.html { redirect_to wallet_url(@wallet), notice: t(:wallet_updated) }
+        format.html { redirect_to wallet_url(@wallet), notice: t(:'wallet.updated') }
         format.json { render :show, status: :ok, location: @wallet }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -52,7 +52,7 @@ class WalletsController < ApplicationController
     @wallet.destroy
 
     respond_to do |format|
-      format.html { redirect_to wallets_url, notice: t(:wallet_destroyed) }
+      format.html { redirect_to wallets_url, notice: t(:'wallet.destroyed') }
       format.json { head :no_content }
     end
   end

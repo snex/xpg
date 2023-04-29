@@ -3,30 +3,19 @@
 require 'rails_helper'
 
 RSpec.describe 'wallets/index' do
+  let(:wallets) { create_list(:named_wallet, 2, pid: 3) }
+
   before do
-    assign(:wallets, [
-             Wallet.create!(
-               name:      'Name 1',
-               password:  'Password',
-               rpc_creds: 'rpc:pass',
-               port:      11_110,
-               pid:       3
-             ),
-             Wallet.create!(
-               name:      'Name 2',
-               password:  'Password',
-               rpc_creds: 'rpc:pass',
-               port:      11_111,
-               pid:       3
-             )
-           ])
+    allow(wallets.first).to receive(:status).and_return(:running)
+    allow(wallets.last).to receive(:status).and_return(:running)
+    assign(:wallets, wallets)
   end
 
   it 'renders a list of wallets' do
     render
     cell_selector = Rails::VERSION::STRING >= '7' ? 'div>p' : 'tr>td'
-    assert_select cell_selector, text: Regexp.new('Name'.to_s), count: 2
-    assert_select cell_selector, text: Regexp.new(1111.to_s), count: 2
-    assert_select cell_selector, text: Regexp.new(3.to_s), count: 2
+    assert_select cell_selector, text: /Name/, count: 2
+    assert_select cell_selector, text: /1000/, count: 2
+    assert_select cell_selector, text: /Running \(pid: 3\)/, count: 2
   end
 end

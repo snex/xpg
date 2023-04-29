@@ -10,13 +10,8 @@
   </p>
 
   <p>
-    <strong>Pid:</strong>
-    <%= wallet.pid %>
-  </p>
-
-  <p>
-    <strong>Running:</strong>
-    <%= wallet.running? %>
+    <strong>Status:</strong>
+    <%= t("wallet.status.#{wallet.status}", pid: wallet.pid) %>
   </p>
 
 </div>

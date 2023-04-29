@@ -3,26 +3,44 @@
 require 'rails_helper'
 
 RSpec.describe 'wallets/show' do
+  let(:wallet) { create(:wallet) }
+  let(:test_status) { :running }
+
   before do
-    assign(:wallet, Wallet.create!(
-                      name:      'Name',
-                      password:  'Password',
-                      rpc_creds: 'rpc:pass',
-                      port:      2,
-                      pid:       3
-                    ))
+    allow(wallet).to receive(:status).and_return(test_status)
+    assign(:wallet, wallet)
     render
   end
 
   it 'renders name' do
-    expect(rendered).to match(/Name/)
+    expect(rendered).to match(/#{wallet.name}/)
   end
 
   it 'renders port' do
-    expect(rendered).to match(/2/)
+    expect(rendered).to match(/#{wallet.port}/)
   end
 
-  it 'renders pid' do
-    expect(rendered).to match(/3/)
+  context 'when the wallet is running' do
+    let(:test_status) { :running }
+
+    it 'renders the running status' do
+      expect(rendered).to match(/Running \(pid: #{wallet.pid}\)/)
+    end
+  end
+
+  context 'when the wallet is building' do
+    let(:test_status) { :building }
+
+    it 'renders the building status' do
+      expect(rendered).to match(/Building Monero wallet/)
+    end
+  end
+
+  context 'when the wallet is in error state' do
+    let(:test_status) { :error }
+
+    it 'renders the building status' do
+      expect(rendered).to match(/Error/)
+    end
   end
 end

@@ -27,11 +27,19 @@ class Wallet < ApplicationRecord
     update(ready_to_run: true)
   end
 
+  def status
+    return :running if running?
+    return :building unless ready_to_run?
+
+    :error
+  end
+
   def running?
     return false if pid.blank?
 
     File.read("/proc/#{pid}/cmdline").match?(%r{monero-wallet-rpc.*--config-file=wallets/#{name}.config})
   rescue Errno::ENOENT
+    update(pid: nil)
     false
   end
 
