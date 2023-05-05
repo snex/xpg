@@ -12,13 +12,13 @@ RSpec.describe MoneroRpcService do
     let(:rpc) { instance_double(MoneroRPC::Client) }
 
     before do
-      allow(rpc).to receive(:create_wallet)
+      allow(rpc).to receive(:generate_view_wallet)
       allow(rpc).to receive(:stop_wallet)
-      rpc_service.create_rpc_wallet
+      rpc_service.create_rpc_wallet('a', '1', 2)
     end
 
     it 'calls create_wallet' do
-      expect(rpc).to have_received(:create_wallet).with(wallet.name, wallet.password).once
+      expect(rpc).to have_received(:generate_view_wallet).with(wallet.name, 'a', wallet.password, '1', 2).once
     end
 
     it 'calls stop_wallet' do

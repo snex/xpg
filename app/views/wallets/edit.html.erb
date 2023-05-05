@@ -1,6 +1,16 @@
 <h1>Editing wallet</h1>
 
-<%= render "form", wallet: @wallet %>
+<%= form_with(model: @wallet) do |form| %>
+  <%= render 'form_errors', wallet: @wallet %>
+  <div>
+    <%= form.label :name, style: "display: block" %>
+    <%= form.text_field :name, disabled: true %>
+  </div>
+  <div>
+    <%= form.label :port, style: "display: block" %>
+    <%= form.number_field :port %>
+  </div>
+<% end %>
 
 <br>
 

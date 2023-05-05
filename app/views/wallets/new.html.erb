@@ -1,6 +1,31 @@
 <h1>New wallet</h1>
 
-<%= render "form", wallet: @wallet %>
+<%= form_with(model: @wallet) do |form| %>
+  <%= render 'form_errors', wallet: @wallet %>
+  <div>
+    <%= form.label :address, style: "display: block" %>
+    <%= form.text_field :address %>
+  </div>
+  <div>
+    <%= form.label :view_key, style: "display: block" %>
+    <%= form.text_field :view_key %>
+  </div>
+  <div>
+    <%= form.label :restore_height, style: "display: block" %>
+    <%= form.number_field :restore_height %>
+  </div>
+  <div>
+    <%= form.label :name, style: "display: block" %>
+    <%= form.text_field :name %>
+  </div>
+  <div>
+    <%= form.label :port, style: "display: block" %>
+    <%= form.number_field :port %>
+  </div>
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
 
 <br>
 

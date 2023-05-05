@@ -3,27 +3,25 @@
 class Wallet < ApplicationRecord
   has_many :invoices, dependent: :restrict_with_error
 
-  validates :name,         presence: true, uniqueness: true
-  validates :password,     presence: true
-  validates :port,         presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness: true
+  validates :port, presence: true, uniqueness: true
 
   encrypts :password, :rpc_creds
 
   after_initialize :assign_file_service
-  before_create :generate_rpc_creds
-  after_commit :create_rpc_wallet_async!, on: :create
+  before_create :generate_creds
 
   attr_accessor :file_service
 
-  def create_rpc_wallet!
+  def create_rpc_wallet!(address, view_key, restore_height)
     return if ready_to_run?
 
     file_service.write_config_file!
-    file_service.spawn_wallet_proc!
+    file_service.spawn_wallet_proc!(address, view_key, restore_height)
   end
 
-  def create_rpc_wallet_file!
-    MoneroRpcService.new(self).create_rpc_wallet
+  def create_rpc_wallet_file!(address, view_key, restore_height)
+    MoneroRpcService.new(self).create_rpc_wallet(address, view_key, restore_height)
     update(ready_to_run: true)
   end
 
@@ -60,13 +58,10 @@ class Wallet < ApplicationRecord
                         end
   end
 
-  def generate_rpc_creds
-    user = SecureRandom.hex
-    pass = SecureRandom.hex
-    self.rpc_creds = "#{user}:#{pass}"
-  end
-
-  def create_rpc_wallet_async!
-    SpawnCreateRpcWalletJob.perform_async(id)
+  def generate_creds
+    self.password = SecureRandom.hex
+    rpc_user = SecureRandom.hex
+    rpc_pass = SecureRandom.hex
+    self.rpc_creds = "#{rpc_user}:#{rpc_pass}"
   end
 end

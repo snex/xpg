@@ -19,12 +19,6 @@ RSpec.describe 'wallets/new' do
     end
   end
 
-  it 'renders new wallet form password input' do
-    assert_select 'form[action=?][method=?]', wallets_path, 'post' do
-      assert_select 'input[name=?]', 'wallet[password]'
-    end
-  end
-
   it 'renders new wallet form port input' do
     assert_select 'form[action=?][method=?]', wallets_path, 'post' do
       assert_select 'input[name=?]', 'wallet[port]'

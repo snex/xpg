@@ -14,7 +14,6 @@ RSpec.describe Wallet do
 
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:name) }
-    it { is_expected.to validate_presence_of(:password) }
     it { is_expected.to validate_presence_of(:port) }
     it { is_expected.to validate_uniqueness_of(:port) }
   end
@@ -39,26 +38,22 @@ RSpec.describe Wallet do
     end
   end
 
-  describe 'before_create :generate_rpc_creds' do
-    let(:wallet) { build(:wallet, rpc_creds: nil) }
+  describe 'before_create :generate_creds' do
+    let(:wallet) { build(:wallet, password: nil, rpc_creds: nil) }
 
-    before { allow(SecureRandom).to receive(:hex).and_return('123', '456') }
+    before { allow(SecureRandom).to receive(:hex).and_return('123', '456', '789') }
+
+    it 'generates a password' do
+      expect { wallet.save }.to change(wallet, :password).from(nil).to('123')
+    end
 
     it 'generates RPC credentials' do
-      expect { wallet.save }.to change(wallet, :rpc_creds).from(nil).to('123:456')
-    end
-  end
-
-  describe 'after_commit :create_rpc_wallet_async!' do
-    it 'enqueues a SpawnCreateRpcWalletJob for the wallet' do
-      wallet.save
-
-      expect(SpawnCreateRpcWalletJob).to have_enqueued_sidekiq_job(wallet.id)
+      expect { wallet.save }.to change(wallet, :rpc_creds).from(nil).to('456:789')
     end
   end
 
   describe '#create_rpc_wallet!' do
-    subject(:create_rpc_wallet!) { wallet.create_rpc_wallet! }
+    subject(:create_rpc_wallet!) { wallet.create_rpc_wallet!('a', '1', 2) }
 
     let(:fs) { instance_double(WalletFileService::CreateWalletFileService) }
 
@@ -98,7 +93,7 @@ RSpec.describe Wallet do
   end
 
   describe '#create_rpc_wallet_file!' do
-    subject(:create_rpc_wallet_file!) { wallet.create_rpc_wallet_file! }
+    subject(:create_rpc_wallet_file!) { wallet.create_rpc_wallet_file!('a', '1', 2) }
 
     let(:wallet) { build(:wallet, ready_to_run: false) }
     let(:rpc) { instance_double(MoneroRpcService) }

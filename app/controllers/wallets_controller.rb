@@ -13,7 +13,7 @@ class WalletsController < ApplicationController
 
   # GET /wallets/new
   def new
-    @wallet = Wallet.new
+    @wallet = WalletCreator.new
   end
 
   # GET /wallets/1/edit
@@ -21,7 +21,7 @@ class WalletsController < ApplicationController
 
   # POST /wallets or /wallets.json
   def create
-    @wallet = Wallet.new(wallet_params)
+    @wallet = WalletCreator.new(create_wallet_params)
 
     respond_to do |format|
       if @wallet.save
@@ -59,13 +59,15 @@ class WalletsController < ApplicationController
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_wallet
     @wallet = Wallet.find(params[:id])
   end
 
-  # Only allow a list of trusted parameters through.
+  def create_wallet_params
+    params.require(:wallet).permit(:address, :view_key, :restore_height, :name, :port)
+  end
+
   def wallet_params
-    params.require(:wallet).permit(:name, :password, :rpc_creds, :port)
+    params.require(:wallet).permit(:name, :port)
   end
 end

@@ -19,7 +19,7 @@ RSpec.describe '/wallets' do
   # Wallet. As you add validations to Wallet, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) do
-    { name: 'wallet', password: 'password', rpc_creds: 'rpc:pass', port: 1 }
+    { address: 'a', view_key: '1', name: 'wallet', port: 1 }
   end
 
   let(:invalid_attributes) do
@@ -28,15 +28,15 @@ RSpec.describe '/wallets' do
 
   describe 'GET /index' do
     it 'renders a successful response' do
-      Wallet.create! valid_attributes
       get wallets_url
       expect(response).to be_successful
     end
   end
 
   describe 'GET /show' do
+    let(:wallet) { create(:wallet) }
+
     it 'renders a successful response' do
-      wallet = Wallet.create! valid_attributes
       get wallet_url(wallet)
       expect(response).to be_successful
     end
@@ -50,8 +50,9 @@ RSpec.describe '/wallets' do
   end
 
   describe 'GET /edit' do
+    let(:wallet) { create(:wallet) }
+
     it 'renders a successful response' do
-      wallet = Wallet.create! valid_attributes
       get edit_wallet_url(wallet)
       expect(response).to be_successful
     end
@@ -86,20 +87,20 @@ RSpec.describe '/wallets' do
   end
 
   describe 'PATCH /update' do
+    let(:wallet) { create(:wallet) }
+
     context 'with valid parameters' do
       let(:new_attributes) do
         { name: 'wallet2' }
       end
 
       it 'updates the requested wallet' do
-        wallet = Wallet.create! valid_attributes
         patch wallet_url(wallet), params: { wallet: new_attributes }
         wallet.reload
         expect(wallet.name).to eq('wallet2')
       end
 
       it 'redirects to the wallet' do
-        wallet = Wallet.create! valid_attributes
         patch wallet_url(wallet), params: { wallet: new_attributes }
         wallet.reload
         expect(response).to redirect_to(wallet_url(wallet))
@@ -108,7 +109,6 @@ RSpec.describe '/wallets' do
 
     context 'with invalid parameters' do
       it "renders a response with 422 status (i.e. to display the 'edit' template)" do
-        wallet = Wallet.create! valid_attributes
         patch wallet_url(wallet), params: { wallet: invalid_attributes }
         expect(response).to have_http_status(:unprocessable_entity)
       end
@@ -116,15 +116,15 @@ RSpec.describe '/wallets' do
   end
 
   describe 'DELETE /destroy' do
+    let!(:wallet) { create(:wallet) }
+
     it 'destroys the requested wallet' do
-      wallet = Wallet.create! valid_attributes
       expect do
         delete wallet_url(wallet)
       end.to change(Wallet, :count).by(-1)
     end
 
     it 'redirects to the wallets list' do
-      wallet = Wallet.create! valid_attributes
       delete wallet_url(wallet)
       expect(response).to redirect_to(wallets_url)
     end
