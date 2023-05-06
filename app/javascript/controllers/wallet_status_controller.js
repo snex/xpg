@@ -28,7 +28,7 @@ export default class extends Controller {
   }
 
   stopRefreshing() {
-    if (ths.refreshTimer) {
+    if (this.refreshTimer) {
       clearInterval(this.refreshTimer)
     }
   }
