@@ -13,7 +13,7 @@ RSpec.describe WalletFileService::CreateWalletFileService do
   end
 
   describe '#spawn_wallet_proc!' do
-    subject(:spawn_wallet_proc!) { cwfs.spawn_wallet_proc!('a', '1', 2) }
+    subject(:spawn_wallet_proc!) { cwfs.spawn_wallet_proc!('a', '1') }
 
     before do
       allow(Process).to receive(:spawn).and_return(1234)
@@ -30,7 +30,7 @@ RSpec.describe WalletFileService::CreateWalletFileService do
     it 'enqueues a CreateRpcWalletJob in 30 seconds' do
       spawn_wallet_proc!
 
-      expect(CreateRpcWalletJob).to have_enqueued_sidekiq_job(wallet.id, 'a', '1', 2).in(30.seconds)
+      expect(CreateRpcWalletJob).to have_enqueued_sidekiq_job(wallet.id, 'a', '1').in(30.seconds)
     end
 
     it 'calls wait2 on the newly created pid' do

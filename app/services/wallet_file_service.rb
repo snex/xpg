@@ -19,6 +19,7 @@ module WalletFileService
 
   def config_hash
     {
+      '%daemon%'    => Rails.application.config.monero_daemon,
       '%rpc_creds%' => @wallet.rpc_creds,
       '%port%'      => @wallet.port.to_s,
       '%name%'      => @wallet.name,

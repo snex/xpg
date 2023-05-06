@@ -3,7 +3,7 @@
 class WalletCreator
   include ActiveModel::Model
 
-  attr_accessor :address, :view_key, :restore_height, :name, :port
+  attr_accessor :address, :view_key, :name, :port
 
   validates :address,  presence: true
   validates :view_key, presence: true
@@ -22,7 +22,7 @@ class WalletCreator
       wallet.save!
     end
 
-    SpawnCreateRpcWalletJob.perform_async(wallet.reload.id, address, view_key, restore_height)
+    SpawnCreateRpcWalletJob.perform_async(wallet.reload.id, address, view_key)
   end
 
   def wallet

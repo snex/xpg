@@ -42,7 +42,7 @@ RSpec.describe WalletCreator do
   describe '#save' do
     subject(:save) { wc.save }
 
-    let!(:wc) { described_class.new(address: 'a', view_key: '1', restore_height: 2) }
+    let!(:wc) { described_class.new(address: 'a', view_key: '1') }
     let!(:wallet) { build(:wallet) }
 
     before do
@@ -80,7 +80,7 @@ RSpec.describe WalletCreator do
       it 'enqueues a SpawnCreateRpcWalletJob' do
         save
 
-        expect(SpawnCreateRpcWalletJob).to have_enqueued_sidekiq_job(wallet.id, 'a', '1', 2)
+        expect(SpawnCreateRpcWalletJob).to have_enqueued_sidekiq_job(wallet.id, 'a', '1')
       end
     end
   end

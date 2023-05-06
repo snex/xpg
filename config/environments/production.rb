@@ -84,4 +84,6 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  config.monero_daemon_port = ENV['MONERO_DAEMON_PORT'] || '18081'
 end

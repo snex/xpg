@@ -8,9 +8,9 @@ module WalletFileService
       Rails.configuration.monero_wallet_rpc.create_wallet
     end
 
-    def spawn_wallet_proc!(address, view_key, restore_height)
+    def spawn_wallet_proc!(address, view_key)
       pid = Process.spawn("monero-wallet-rpc --config-file=wallets/#{@wallet.name}.config")
-      CreateRpcWalletJob.perform_in(30.seconds, @wallet.id, address, view_key, restore_height)
+      CreateRpcWalletJob.perform_in(30.seconds, @wallet.id, address, view_key)
       Process.wait2(pid)
     end
   end

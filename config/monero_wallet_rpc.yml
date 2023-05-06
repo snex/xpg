@@ -1,11 +1,11 @@
 development:
-  create_wallet: 'rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-dir=wallets/&stagenet=true&daemon-host=stagenet.community.rino.io'
-  rpc_wallet:    'rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-file=wallets/%name%&password=%password%&stagenet=true&daemon-host=stagenet.community.rino.io&tx-notify=/home/snex/github/xpg/process_tx.sh %id% %s'
+  create_wallet: 'rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-dir=wallets/&stagenet=true&daemon-host=%daemon%'
+  rpc_wallet:    'rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-file=wallets/%name%&password=%password%&stagenet=true&daemon-host=%daemon%&tx-notify=/home/snex/github/xpg/process_tx.sh %id% %s'
 
 test:
-  create_wallet: 'rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-dir=wallets/&stagenet=true&daemon-host=stagenet.community.rino.io'
-  rpc_wallet:    'rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-file=wallets/%name%&password=%password%&stagenet=true&daemon-host=stagenet.community.rino.io&tx-notify=/home/snex/github/xpg/process_tx.sh %id% %s'
+  create_wallet: 'rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-dir=wallets/&stagenet=true&daemon-host=%daemon%'
+  rpc_wallet:    'rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-file=wallets/%name%&password=%password%&stagenet=true&daemon-host=%daemon%&tx-notify=/home/snex/github/xpg/process_tx.sh %id% %s'
 
 production:
-  create_wallet: 'rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-dir=wallets/&daemon-host=production.daemon.host'
-  rpc_wallet:    'rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-file=wallets/%name%&password=%password%&daemon-host=production.daemon.host&tx-notify=/home/snex/github/xpg/process_tx.sh %id% %s'
+  create_wallet: 'rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-dir=wallets/&daemon-host=%daemon%'
+  rpc_wallet:    'rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-file=wallets/%name%&password=%password%&daemon-host=%daemon%&tx-notify=/home/snex/github/xpg/process_tx.sh %id% %s'

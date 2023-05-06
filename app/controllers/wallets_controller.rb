@@ -68,7 +68,7 @@ class WalletsController < ApplicationController
   end
 
   def create_wallet_params
-    params.require(:wallet).permit(:address, :view_key, :restore_height, :name, :port)
+    params.require(:wallet).permit(:address, :view_key, :name, :port)
   end
 
   def wallet_params

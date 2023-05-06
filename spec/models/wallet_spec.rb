@@ -53,7 +53,7 @@ RSpec.describe Wallet do
   end
 
   describe '#create_rpc_wallet!' do
-    subject(:create_rpc_wallet!) { wallet.create_rpc_wallet!('a', '1', 2) }
+    subject(:create_rpc_wallet!) { wallet.create_rpc_wallet!('a', '1') }
 
     let(:fs) { instance_double(WalletFileService::CreateWalletFileService) }
 
@@ -93,7 +93,7 @@ RSpec.describe Wallet do
   end
 
   describe '#create_rpc_wallet_file!' do
-    subject(:create_rpc_wallet_file!) { wallet.create_rpc_wallet_file!('a', '1', 2) }
+    subject(:create_rpc_wallet_file!) { wallet.create_rpc_wallet_file!('a', '1') }
 
     let(:wallet) { build(:wallet, ready_to_run: false) }
     let(:rpc) { instance_double(MoneroRpcService) }

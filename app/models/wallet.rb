@@ -13,15 +13,15 @@ class Wallet < ApplicationRecord
 
   attr_accessor :file_service
 
-  def create_rpc_wallet!(address, view_key, restore_height)
+  def create_rpc_wallet!(address, view_key)
     return if ready_to_run?
 
     file_service.write_config_file!
-    file_service.spawn_wallet_proc!(address, view_key, restore_height)
+    file_service.spawn_wallet_proc!(address, view_key)
   end
 
-  def create_rpc_wallet_file!(address, view_key, restore_height)
-    MoneroRpcService.new(self).create_rpc_wallet(address, view_key, restore_height)
+  def create_rpc_wallet_file!(address, view_key)
+    MoneroRpcService.new(self).create_rpc_wallet(address, view_key)
     update(ready_to_run: true)
   end
 
