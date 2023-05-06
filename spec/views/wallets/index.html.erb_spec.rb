@@ -13,8 +13,7 @@ RSpec.describe 'wallets/index' do
 
   it 'renders a list of wallets' do
     render
-    cell_selector = Rails::VERSION::STRING >= '7' ? 'div>p' : 'tr>td'
-    assert_select cell_selector, text: /Name/, count: 2
-    assert_select cell_selector, text: /1000/, count: 2
+    assert_select 'div>h2', text: /Name/, count: 2
+    assert_select 'div>p', text: /1000/, count: 2
   end
 end
