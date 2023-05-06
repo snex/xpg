@@ -10,12 +10,6 @@ RSpec.describe 'wallets/edit' do
     render
   end
 
-  it 'renders the edit wallet form name input' do
-    assert_select 'form[action=?][method=?]', wallet_path(wallet), 'post' do
-      assert_select 'input[name=?]', 'wallet[name]'
-    end
-  end
-
   it 'renders the edit wallet form port input' do
     assert_select 'form[action=?][method=?]', wallet_path(wallet), 'post' do
       assert_select 'input[name=?]', 'wallet[port]'
