@@ -3,8 +3,12 @@
 require 'monero'
 require 'active_support/inflector'
 
-$rpc = MoneroRPC.new(host: '127.0.0.1', port: '12345', username: 'abffa309461c77ba92462e6046976e62',
-                       password: 'cd10c0a5df5532d1f99ddfde705bd34e')
+$rpc = MoneroRPC.new(
+  host:     '127.0.0.1',
+  port:     '12345',
+  username: 'abffa309461c77ba92462e6046976e62',
+  password: 'cd10c0a5df5532d1f99ddfde705bd34e'
+)
 
 puts 'wallet 1 info'
 puts '========================================================'

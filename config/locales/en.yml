@@ -37,4 +37,8 @@ en:
     status:
       building: 'Building Monero wallet'
       running:  'Running (pid: %{pid})'
-      error:    'Error'
+      error:    'Not Running'
+    status_color:
+      building: 'orange'
+      running:  'green'
+      error:    'red'

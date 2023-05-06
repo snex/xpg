@@ -129,4 +129,13 @@ RSpec.describe '/wallets' do
       expect(response).to redirect_to(wallets_url)
     end
   end
+
+  describe 'GET /wallet/:id/status' do
+    let(:wallet) { create(:wallet) }
+
+    it 'renders a successful response' do
+      get status_wallet_url(wallet)
+      expect(response).to be_successful
+    end
+  end
 end

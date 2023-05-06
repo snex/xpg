@@ -35,5 +35,9 @@ RSpec.describe WalletsController do
     it 'routes to #destroy' do
       expect(delete: '/wallets/1').to route_to('wallets#destroy', id: '1')
     end
+
+    it 'routes to #status' do
+      expect(get: '/wallets/1/status').to route_to('wallets#status', id: '1')
+    end
   end
 end

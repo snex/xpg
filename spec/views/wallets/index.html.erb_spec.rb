@@ -16,6 +16,5 @@ RSpec.describe 'wallets/index' do
     cell_selector = Rails::VERSION::STRING >= '7' ? 'div>p' : 'tr>td'
     assert_select cell_selector, text: /Name/, count: 2
     assert_select cell_selector, text: /1000/, count: 2
-    assert_select cell_selector, text: /Running \(pid: 3\)/, count: 2
   end
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class WalletsController < ApplicationController
-  before_action :set_wallet, only: %i[show edit update destroy]
+  before_action :set_wallet, only: %i[show edit update destroy status]
 
   # GET /wallets or /wallets.json
   def index
@@ -55,6 +55,10 @@ class WalletsController < ApplicationController
       format.html { redirect_to wallets_url, notice: t(:'wallet.destroyed') }
       format.json { head :no_content }
     end
+  end
+
+  def status
+    render 'status', layout: false
   end
 
   private

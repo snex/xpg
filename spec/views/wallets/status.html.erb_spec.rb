@@ -43,7 +43,7 @@ RSpec.describe 'wallets/status' do
     end
 
     it 'renders the building status' do
-      expect(rendered).to match(/Error/)
+      expect(rendered).to match(/Not Running/)
     end
   end
 end
