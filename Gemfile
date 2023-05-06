@@ -45,8 +45,9 @@ gem 'sassc-rails'
 gem 'sidekiq', '<7'
 gem 'sidekiq-scheduler'
 
-# Bootstrap CSS
+# Styling
 gem 'bootstrap'
+gem 'font-awesome-rails'
 
 # monero gem
 gem 'monero', path: '/home/snex/github/ruby/monero'

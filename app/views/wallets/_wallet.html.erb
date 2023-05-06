@@ -1,19 +1,26 @@
-<div id="<%= dom_id wallet %>">
-  <p>
-    <strong>Name:</strong>
-    <%= wallet.name %>
-  </p>
+<div id="<%= dom_id wallet %>" class="card col-sm-3">
+  <div class="card-body">
+    <h2 class="card-title">
+      <%= link_to wallet.name, wallet, class: 'link-dark' %>
+      <%= link_to(fa_icon('pencil-square'), edit_wallet_path(wallet), class: 'link-dark') %>
+    </h2>
 
-  <p>
-    <strong>Port:</strong>
-    <%= wallet.port %>
-  </p>
-
-  <p>
+    <p>
     <strong>Status:</strong>
     <span data-controller="wallet-status" data-wallet-status-url-value="<%= status_wallet_path(wallet.id) %>" data-wallet-status-refresh-interval-value="5000">
-      ...
-    </span>
-  </p>
+      <span class="spinner-border spinner-border-sm" role="status" />
+      </span>
+    </p>
 
+    <a class="link-dark" role="button" data-bs-toggle="collapse" data-bs-target="#detailsWallet<%= wallet.id %>">
+      <%= fa_icon 'angle-down', text: 'Details' %>
+    </a>
+    <div id="detailsWallet<%= wallet.id %>" class="collapse">
+      <p>
+        <strong>Port:</strong>
+        <%= wallet.port %>
+      </p>
+    </div>
+
+  </div>
 </div>

@@ -1,20 +1,18 @@
-<h1>Editing wallet</h1>
+<h1>Editing wallet <%= @wallet.name %></h1>
 
 <%= form_with(model: @wallet) do |form| %>
   <%= render 'form_errors', wallet: @wallet %>
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name, disabled: true %>
+  <div class="col-md-1">
+    <%= form.label :port, class: 'form-label' %>
+    <%= form.number_field :port, class: 'form-control' %>
   </div>
-  <div>
-    <%= form.label :port, style: "display: block" %>
-    <%= form.number_field :port %>
+  <div class="col-md-1">
+    <%= form.submit class: 'btn btn-dark' %>
   </div>
 <% end %>
 
 <br>
 
 <div>
-  <%= link_to "Show this wallet", @wallet %> |
-  <%= link_to "Back to wallets", wallets_path %>
+  <%= link_to "Back to wallets", wallets_path, class: 'link-dark' %>
 </div>
