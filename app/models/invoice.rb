@@ -10,7 +10,7 @@ class Invoice < ApplicationRecord
   validates :callback_url,     presence: true, url: true
 
   encrypts :amount, :callback_url
-  # Need deterministic encryption in order to support unique constraint
+  # Need deterministic encryption in order to support search and unique constraint
   encrypts :incoming_address, :external_id, deterministic: true
 
   before_create :generate_incoming_address
