@@ -15,6 +15,7 @@ RSpec.describe Invoice do
     it { is_expected.to validate_presence_of(:expires_at) }
     it { is_expected.to validate_presence_of(:external_id) }
     it { is_expected.to validate_presence_of(:callback_url) }
+    it { is_expected.to validate_url_of(:callback_url) }
   end
 
   describe 'before_create :generate_incoming_address' do

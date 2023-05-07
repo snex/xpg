@@ -291,6 +291,9 @@ GEM
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.4.2)
     uri (0.12.1)
+    validate_url (1.0.15)
+      activemodel (>= 3.0.0)
+      public_suffix
     web-console (4.2.0)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -333,6 +336,7 @@ DEPENDENCIES
   stimulus-rails
   turbo-rails
   tzinfo-data
+  validate_url
   web-console
 
 RUBY VERSION

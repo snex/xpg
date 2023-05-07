@@ -77,3 +77,5 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
+
+require 'validate_url/rspec_matcher'
