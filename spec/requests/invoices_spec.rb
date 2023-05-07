@@ -35,18 +35,30 @@ RSpec.describe '/invoices' do
   end
 
   describe 'GET /show' do
-    let(:invoice) { create(:invoice, wallet: wallet) }
+    context 'when the record does not exist' do
+      before { get invoice_url('does not exist') }
 
-    before do
-      get invoice_url(invoice)
+      it 'renders not_found' do
+        expect(response).to be_not_found
+      end
+
+      it 'renders a response in the correct schema' do
+        expect(response).to match_response_schema('error')
+      end
     end
 
-    it 'renders a successful response' do
-      expect(response).to be_successful
-    end
+    context 'when the record exists' do
+      let(:invoice) { create(:invoice, wallet: wallet) }
 
-    it 'renders a response in the correct schema' do
-      expect(response).to match_response_schema('invoice')
+      before { get invoice_url(invoice) }
+
+      it 'renders a successful response' do
+        expect(response).to be_successful
+      end
+
+      it 'renders a response in the correct schema' do
+        expect(response).to match_response_schema('invoice')
+      end
     end
   end
 
