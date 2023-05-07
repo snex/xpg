@@ -18,26 +18,6 @@ RSpec.describe Wallet do
     it { is_expected.to validate_uniqueness_of(:port) }
   end
 
-  describe 'after_initialize assign_file_service' do
-    context 'when ready_to_run? is true' do
-      let!(:wallet) { create(:wallet, ready_to_run: true) }
-
-      it 'instantiates a WalletFileService::RpcWalletFileService' do
-        expect(described_class.find(wallet.id).file_service)
-          .to be_a(WalletFileService::RpcWalletFileService)
-      end
-    end
-
-    context 'when ready_to_run? is false' do
-      let!(:wallet) { create(:wallet, ready_to_run: false) }
-
-      it 'instantiates a WalletFileService::CreateWalletFileService' do
-        expect(described_class.find(wallet.id).file_service)
-          .to be_a(WalletFileService::CreateWalletFileService)
-      end
-    end
-  end
-
   describe 'before_create :generate_creds' do
     let(:wallet) { build(:wallet, password: nil, rpc_creds: nil) }
 
@@ -58,7 +38,7 @@ RSpec.describe Wallet do
     let(:fs) { instance_double(WalletFileService::CreateWalletFileService) }
 
     before do
-      allow(wallet).to receive(:file_service).and_return(fs)
+      allow(WalletFileService::CreateWalletFileService).to receive(:new).and_return(fs)
       allow(fs).to receive(:write_config_file!)
       allow(fs).to receive(:spawn_wallet_proc!)
     end
@@ -111,6 +91,44 @@ RSpec.describe Wallet do
 
     it 'sets ready_to_run to true' do
       expect { create_rpc_wallet_file! }.to change(wallet, :ready_to_run).from(false).to(true)
+    end
+  end
+
+  describe '#generate_incoming_address' do
+    subject(:generate_incoming_address) { wallet.generate_incoming_address }
+
+    let(:rpc) { instance_double(MoneroRpcService) }
+
+    before { allow(MoneroRpcService).to receive(:new).with(wallet).and_return(rpc) }
+
+    context 'when RPC creds have not been generated' do
+      let(:wallet) { build(:wallet, rpc_creds: nil) }
+
+      it 'does not call MonerpRpcService.new' do
+        generate_incoming_address
+
+        expect(MoneroRpcService).not_to have_received(:new)
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when RPC creds have been generated' do
+      before { allow(rpc).to receive(:create_incoming_address).and_return('12345') }
+
+      it 'calls MoneroRpcService.new' do
+        generate_incoming_address
+
+        expect(MoneroRpcService).to have_received(:new).once
+      end
+
+      it 'calls create_incoming_address' do
+        generate_incoming_address
+
+        expect(rpc).to have_received(:create_incoming_address).once
+      end
+
+      it { is_expected.to eq('12345') }
     end
   end
 
@@ -188,7 +206,7 @@ RSpec.describe Wallet do
     let(:fs) { instance_double(WalletFileService::RpcWalletFileService) }
 
     before do
-      allow(wallet).to receive(:file_service).and_return(fs)
+      allow(WalletFileService::RpcWalletFileService).to receive(:new).and_return(fs)
       allow(fs).to receive(:write_config_file!)
       allow(fs).to receive(:spawn_wallet_proc!)
     end

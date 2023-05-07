@@ -44,4 +44,18 @@ RSpec.describe MoneroRpcService do
       expect(rpc).to have_received(:stop_wallet).once
     end
   end
+
+  describe '#create_incoming_address' do
+    subject(:create_incoming_address) { rpc_service.create_incoming_address }
+
+    before { allow(rpc).to receive(:create_address).and_return({ 'address' => '12345' }) }
+
+    it 'calls create_address' do
+      create_incoming_address
+
+      expect(rpc).to have_received(:create_address).once
+    end
+
+    it { is_expected.to eq('12345') }
+  end
 end

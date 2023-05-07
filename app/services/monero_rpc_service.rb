@@ -21,4 +21,8 @@ class MoneroRpcService
     @rpc.generate_view_wallet(@wallet.name, address, @wallet.password, view_key, current_height)
     @rpc.stop_wallet
   end
+
+  def create_incoming_address
+    @rpc.create_address['address']
+  end
 end

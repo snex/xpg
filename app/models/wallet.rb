@@ -8,10 +8,7 @@ class Wallet < ApplicationRecord
 
   encrypts :password, :rpc_creds
 
-  after_initialize :assign_file_service
   before_create :generate_creds
-
-  attr_accessor :file_service
 
   def create_rpc_wallet!(address, view_key)
     return if ready_to_run?
@@ -21,8 +18,12 @@ class Wallet < ApplicationRecord
   end
 
   def create_rpc_wallet_file!(address, view_key)
-    MoneroRpcService.new(self).create_rpc_wallet(address, view_key)
+    monero_rpc_service.create_rpc_wallet(address, view_key)
     update(ready_to_run: true)
+  end
+
+  def generate_incoming_address
+    monero_rpc_service&.create_incoming_address
   end
 
   def status
@@ -50,12 +51,18 @@ class Wallet < ApplicationRecord
 
   private
 
-  def assign_file_service
-    self.file_service = if ready_to_run?
-                          WalletFileService::RpcWalletFileService.new(self)
-                        else
-                          WalletFileService::CreateWalletFileService.new(self)
-                        end
+  def file_service
+    @file_service ||= if ready_to_run?
+                        WalletFileService::RpcWalletFileService.new(self)
+                      else
+                        WalletFileService::CreateWalletFileService.new(self)
+                      end
+  end
+
+  def monero_rpc_service
+    return unless rpc_creds?
+
+    @monero_rpc_service ||= MoneroRpcService.new(self)
   end
 
   def generate_creds
