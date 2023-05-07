@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_07_180746) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_07_203227) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -19,13 +19,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_07_180746) do
     t.bigint "wallet_id", null: false
     t.string "amount", null: false
     t.datetime "expires_at", null: false
-    t.string "external_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "incoming_address", null: false
     t.string "callback_url", null: false
-    t.index ["external_id"], name: "index_invoices_on_external_id", unique: true
+    t.string "external_id", default: "", null: false
     t.index ["incoming_address"], name: "index_invoices_on_incoming_address", unique: true
+    t.index ["wallet_id", "external_id"], name: "index_invoices_on_wallet_id_and_external_id", unique: true
     t.index ["wallet_id"], name: "index_invoices_on_wallet_id"
   end
 

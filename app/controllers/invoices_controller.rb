@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InvoicesController < ApplicationController
+class InvoicesController < ApiController
   before_action :set_invoice, only: %i[show update destroy]
 
   def index
