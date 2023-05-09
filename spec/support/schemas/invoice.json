@@ -10,6 +10,7 @@
     "updated_at",
     "url",
     "incoming_address",
+    "payment_id",
     "callback_url"
   ],
   "properties": {
@@ -22,6 +23,7 @@
     "updated_at":       { "type": "string", "format": "date-time" },
     "url":              { "type": "string", "format": "uri" },
     "incoming_address": { "type": "string" },
+    "payment_id":       { "type": "string" },
     "callback_url":     { "type": "string", "format": "uri" }
   }
 }

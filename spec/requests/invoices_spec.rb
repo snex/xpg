@@ -14,7 +14,7 @@ RSpec.describe '/invoices' do
     }
   end
   let(:invalid_attributes) do
-    { wallet_id: '', external_id: '' }
+    { wallet_id: '' }
   end
 
   before { allow(wallet).to receive(:generate_incoming_address).and_return('1234') }
@@ -68,7 +68,8 @@ RSpec.describe '/invoices' do
     # TODO: figure out a way to reduce the coupling here
     before do
       allow(MoneroRpcService).to receive(:new).and_return(rpc)
-      allow(rpc).to receive(:create_incoming_address).and_return('1234')
+      allow(rpc).to receive(:generate_incoming_address).and_return({ 'integrated_address' => '1234',
+                                                                     'payment_id'         => '4321' })
     end
 
     context 'with valid parameters' do

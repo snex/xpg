@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_07_203227) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_08_044623) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -21,12 +21,23 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_07_203227) do
     t.datetime "expires_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "incoming_address", null: false
     t.string "callback_url", null: false
-    t.string "external_id", default: "", null: false
-    t.index ["incoming_address"], name: "index_invoices_on_incoming_address", unique: true
+    t.string "external_id", null: false
+    t.string "incoming_address", null: false
+    t.string "payment_id", null: false
+    t.index ["incoming_address", "payment_id"], name: "index_invoices_on_incoming_address_and_payment_id", unique: true
     t.index ["wallet_id", "external_id"], name: "index_invoices_on_wallet_id_and_external_id", unique: true
     t.index ["wallet_id"], name: "index_invoices_on_wallet_id"
+  end
+
+  create_table "payments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "invoice_id", null: false
+    t.string "amount", null: false
+    t.string "monero_tx_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_payments_on_invoice_id"
+    t.index ["monero_tx_id"], name: "index_payments_on_monero_tx_id", unique: true
   end
 
   create_table "wallets", force: :cascade do |t|
@@ -43,4 +54,5 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_07_203227) do
   end
 
   add_foreign_key "invoices", "wallets"
+  add_foreign_key "payments", "invoices"
 end

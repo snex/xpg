@@ -22,7 +22,11 @@ class MoneroRpcService
     @rpc.stop_wallet
   end
 
-  def create_incoming_address
-    @rpc.create_address['address']
+  def generate_incoming_address
+    @rpc.make_integrated_address
+  end
+
+  def transfer_details(tx_id)
+    @rpc.get_transfer_by_txid(tx_id)
   end
 end

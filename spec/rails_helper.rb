@@ -2,6 +2,7 @@
 
 require 'simplecov'
 SimpleCov.start 'rails' do
+  enable_coverage :branch
   groups.delete 'Channels'
   groups.delete 'Jobs'
   add_group 'Sidekiq Jobs', 'app/sidekiq'

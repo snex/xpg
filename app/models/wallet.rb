@@ -23,7 +23,22 @@ class Wallet < ApplicationRecord
   end
 
   def generate_incoming_address
-    monero_rpc_service&.create_incoming_address
+    monero_rpc_service&.generate_incoming_address
+  end
+
+  def process_transaction(monero_tx_id)
+    tx_details = monero_rpc_service.transfer_details(monero_tx_id)
+    payment_id = tx_details['transfer']['payment_id']
+    amount = tx_details['transfer']['amount']
+    invoice = invoices.find_by(payment_id: payment_id)
+
+    return if invoice.blank?
+
+    # TODO: do something with unlock time?
+    # TODO: enqueue a job to check the payment for confirmations?
+    Payment.create!(invoice: invoice, amount: amount, monero_tx_id: monero_tx_id)
+
+    # TODO: ping the callback url and record the result
   end
 
   def status

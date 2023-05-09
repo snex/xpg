@@ -114,7 +114,7 @@ RSpec.describe Wallet do
     end
 
     context 'when RPC creds have been generated' do
-      before { allow(rpc).to receive(:create_incoming_address).and_return('12345') }
+      before { allow(rpc).to receive(:generate_incoming_address).and_return('12345') }
 
       it 'calls MoneroRpcService.new' do
         generate_incoming_address
@@ -125,10 +125,45 @@ RSpec.describe Wallet do
       it 'calls create_incoming_address' do
         generate_incoming_address
 
-        expect(rpc).to have_received(:create_incoming_address).once
+        expect(rpc).to have_received(:generate_incoming_address).once
       end
 
       it { is_expected.to eq('12345') }
+    end
+  end
+
+  describe '#process_transaction' do
+    subject(:process_tx) { wallet.process_transaction('abcd') }
+
+    let(:rpc) { instance_double(MoneroRpcService) }
+
+    before do
+      allow(MoneroRpcService).to receive(:new).with(wallet).and_return(rpc)
+      allow(rpc).to receive(:transfer_details).with('abcd').and_return({ 'transfer' => { 'payment_id' => '1234', 'amount' => 1 } })
+    end
+
+    context 'when there is no invoice expecting a transaction' do
+      before { allow(wallet).to receive(:invoices).and_return(Invoice.none) }
+
+      it 'does not create a Payment' do
+        expect { process_tx }.not_to change(Payment, :count)
+      end
+    end
+
+    context 'when there is no invoice with the incoming payment_id' do
+      before { create(:invoice, wallet: wallet, payment_id: '4321') }
+
+      it 'does not create a Payment' do
+        expect { process_tx }.not_to change(Payment, :count)
+      end
+    end
+
+    context 'when there is an invoice with the incoming payment_id' do
+      before { create(:invoice, wallet: wallet, payment_id: '1234') }
+
+      it 'creates a Payment' do
+        expect { process_tx }.to change(Payment, :count).by(1)
+      end
     end
   end
 

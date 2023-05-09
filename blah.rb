@@ -26,8 +26,10 @@ puts rpc.get_addresses
 puts rpc.balance
 puts rpc.unlocked_balance
 
-# new_addr = rpc.create_address
+puts rpc.get_transfer_by_txid '52cc1631c7e26c26281d0446dc8fc113f0dde8176ec60639333c38927f07d101'
+
+new_addr = rpc.make_integrated_address
 # new_addr_idx = new_addr['address_index']
 # new_addr_addr = new_addr['address']
-# puts new_addr
+puts new_addr
 # puts rpc.create_transfer(new_addr_addr, 1000000000000)
