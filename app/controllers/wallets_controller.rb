@@ -4,7 +4,7 @@ class WalletsController < ApplicationController
   before_action :set_wallet, only: %i[show edit update destroy status]
 
   def index
-    @wallets = Wallet.all
+    @wallets = Wallet.all.order(:id)
   end
 
   def show; end
@@ -61,10 +61,10 @@ class WalletsController < ApplicationController
   end
 
   def create_wallet_params
-    params.require(:wallet).permit(:address, :view_key, :name, :port)
+    params.require(:wallet).permit(:address, :view_key, :name, :port, :default_expiry_ttl)
   end
 
   def wallet_params
-    params.require(:wallet).permit(:name, :port)
+    params.require(:wallet).permit(:name, :port, :default_expiry_ttl)
   end
 end

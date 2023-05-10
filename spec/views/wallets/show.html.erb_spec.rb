@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'wallets/show' do
-  let(:wallet) { create(:wallet) }
+  let(:wallet) { create(:wallet, :with_default_expiry_ttl) }
 
   before do
     assign(:wallet, wallet)
@@ -16,5 +16,9 @@ RSpec.describe 'wallets/show' do
 
   it 'renders port' do
     expect(rendered).to match(/#{wallet.port}/)
+  end
+
+  it 'renders default_expiry_ttl' do
+    expect(rendered).to match(/#{wallet.default_expiry_ttl}/)
   end
 end

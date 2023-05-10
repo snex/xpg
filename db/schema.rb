@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_08_044623) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_10_210503) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -49,6 +49,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_08_044623) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "ready_to_run", default: false, null: false
+    t.integer "default_expiry_ttl"
     t.index ["name"], name: "index_wallets_on_name", unique: true
     t.index ["port"], name: "index_wallets_on_port", unique: true
   end

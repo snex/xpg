@@ -15,7 +15,7 @@ class InvoicesController < ApiController
     if @invoice.save
       render :show, status: :created, location: @invoice
     else
-      render json: @invoice.errors, status: :unprocessable_entity
+      render json: { errors: @invoice.errors }, status: :unprocessable_entity
     end
   end
 
@@ -23,7 +23,7 @@ class InvoicesController < ApiController
     if @invoice.update(invoice_params)
       render :show, status: :ok, location: @invoice
     else
-      render json: @invoice.errors, status: :unprocessable_entity
+      render json: { errors: @invoice.errors }, status: :unprocessable_entity
     end
   end
 

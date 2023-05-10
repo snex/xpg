@@ -5,10 +5,11 @@ class Wallet < ApplicationRecord
 
   validates :name, presence: true, uniqueness: true
   validates :port, presence: true, uniqueness: true
+  validates :default_expiry_ttl, numericality: { only_integer: true, allow_nil: true }
 
   encrypts :password, :rpc_creds
 
-  before_create :generate_creds
+  before_validation :generate_creds
 
   def create_rpc_wallet!(address, view_key)
     return if ready_to_run?
@@ -81,9 +82,9 @@ class Wallet < ApplicationRecord
   end
 
   def generate_creds
-    self.password = SecureRandom.hex
+    self.password ||= SecureRandom.hex
     rpc_user = SecureRandom.hex
     rpc_pass = SecureRandom.hex
-    self.rpc_creds = "#{rpc_user}:#{rpc_pass}"
+    self.rpc_creds ||= "#{rpc_user}:#{rpc_pass}"
   end
 end

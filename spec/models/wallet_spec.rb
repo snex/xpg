@@ -16,19 +16,20 @@ RSpec.describe Wallet do
     it { is_expected.to validate_uniqueness_of(:name) }
     it { is_expected.to validate_presence_of(:port) }
     it { is_expected.to validate_uniqueness_of(:port) }
+    it { is_expected.to validate_numericality_of(:default_expiry_ttl).only_integer.allow_nil }
   end
 
-  describe 'before_create :generate_creds' do
+  describe 'before_validation :generate_creds' do
     let(:wallet) { build(:wallet, password: nil, rpc_creds: nil) }
 
     before { allow(SecureRandom).to receive(:hex).and_return('123', '456', '789') }
 
     it 'generates a password' do
-      expect { wallet.save }.to change(wallet, :password).from(nil).to('123')
+      expect { wallet.valid? }.to change(wallet, :password).from(nil).to('123')
     end
 
     it 'generates RPC credentials' do
-      expect { wallet.save }.to change(wallet, :rpc_creds).from(nil).to('456:789')
+      expect { wallet.valid? }.to change(wallet, :rpc_creds).from(nil).to('456:789')
     end
   end
 
@@ -139,7 +140,8 @@ RSpec.describe Wallet do
 
     before do
       allow(MoneroRpcService).to receive(:new).with(wallet).and_return(rpc)
-      allow(rpc).to receive(:transfer_details).with('abcd').and_return({ 'transfer' => { 'payment_id' => '1234', 'amount' => 1 } })
+      allow(rpc).to receive(:transfer_details).with('abcd').and_return({ 'transfer' => { 'payment_id' => '1234',
+                                                                                         'amount'     => 1 } })
     end
 
     context 'when there is no invoice expecting a transaction' do

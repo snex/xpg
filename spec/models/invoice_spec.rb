@@ -60,6 +60,34 @@ RSpec.describe Invoice do
     end
   end
 
+  describe 'before_validation :assign_expires_at' do
+    context 'when expires_at is already present' do
+      it 'accepts the passed in value' do
+        expect { invoice.save }.not_to change(invoice, :expires_at)
+      end
+    end
+
+    context 'when expires_at comes from the wallet' do
+      let(:wallet) { create(:wallet, default_expiry_ttl: 30) }
+      let(:invoice) { build(:invoice, wallet: wallet, expires_at: nil) }
+
+      before { allow(Time).to receive(:current).and_return(DateTime.new(2000, 1, 1, 0, 0, 0)) }
+
+      it 'uses curren time plus the default value on the wallet, in minutes' do
+        expect { invoice.save }.to change(invoice, :expires_at).from(nil).to(DateTime.new(2000, 1, 1, 0, 30, 0))
+      end
+    end
+
+    context 'when no expires_at is set' do
+      let(:wallet) { build(:wallet, default_expiry_ttl: nil) }
+      let(:invoice) { build(:invoice, expires_at: nil) }
+
+      it 'cannot save the wallet due to a missing expires_at' do
+        expect { invoice.save }.not_to change(invoice, :id)
+      end
+    end
+  end
+
   describe '#status' do
     subject { invoice.status }
 

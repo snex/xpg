@@ -96,6 +96,11 @@ RSpec.describe '/invoices' do
         post invoices_url, params: { invoice: invalid_attributes }
         expect(response).to have_http_status(:unprocessable_entity)
       end
+
+      it 'renders a response in the correct schema' do
+        post invoices_url, params: { invoice: invalid_attributes }
+        expect(response).to match_response_schema('error')
+      end
     end
   end
 
@@ -124,6 +129,11 @@ RSpec.describe '/invoices' do
       it 'renders a response with 422 status' do
         patch invoice_url(invoice), params: { invoice: invalid_attributes }
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'renders a response in the correct schema' do
+        patch invoice_url(invoice), params: { invoice: invalid_attributes }
+        expect(response).to match_response_schema('error')
       end
     end
   end
