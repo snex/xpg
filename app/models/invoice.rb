@@ -15,6 +15,7 @@ class Invoice < ApplicationRecord
   # Need deterministic encryption in order to support search and unique constraint
   encrypts :incoming_address, :payment_id, :external_id, deterministic: true
 
+  before_validation :assign_expires_at
   before_create :generate_incoming_address
 
   def status
@@ -30,8 +31,19 @@ class Invoice < ApplicationRecord
     return if incoming_address? && payment_id?
 
     integrated_address = wallet.generate_incoming_address
-    self.incoming_address = integrated_address['integrated_address']
-    self.payment_id = integrated_address['payment_id']
+    self.incoming_address ||= integrated_address['integrated_address']
+    self.payment_id ||= integrated_address['payment_id']
+  end
+
+  def assign_expires_at
+    return if expires_at?
+    return unless wallet_id?
+
+    # Rails has not yet set the wallet object
+    wallet ||= Wallet.find(wallet_id)
+    return unless wallet.default_expiry_ttl?
+
+    self.expires_at = Time.current + wallet.default_expiry_ttl&.minutes
   end
 
   def payment_status

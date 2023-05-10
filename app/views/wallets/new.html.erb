@@ -18,6 +18,10 @@
     <%= form.label :port, class: 'form-label' %>
     <%= form.number_field :port, class: 'form-control', placeholder: 'The Port for this Wallet\'s RPC Service' %>
   </div>
+  <div class="col-md-6">
+    <%= form.label :default_expiry_ttl, class: 'form-label' %>
+    <%= form.number_field :default_expiry_ttl, class: 'form-control', placeholder: 'The Default Expiration Time in Minutes for Invoices in this Wallet' %>
+  </div>
   <div>
     <%= form.submit class: 'btn btn-dark' %>
   </div>

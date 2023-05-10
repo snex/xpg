@@ -1,9 +1,9 @@
 {
   "type": "object",
   "required": [
-    "error"
+    "errors"
   ],
-  "properties": {
-    "error": { "type": "string" }
+  "contains": {
+    "type": "string"
   }
 }

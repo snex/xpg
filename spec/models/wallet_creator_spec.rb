@@ -7,7 +7,7 @@ RSpec.describe WalletCreator do
     expect(described_class.ancestors).to include(ActiveModel::Model)
   end
 
-  context 'with validations' do
+  describe 'validations' do
     it { is_expected.to validate_presence_of(:view_key) }
 
     describe '#validate_wallet' do
@@ -29,7 +29,7 @@ RSpec.describe WalletCreator do
     end
   end
 
-  context 'with delegators' do
+  describe 'delegators' do
     it { is_expected.to delegate_method(:to_param).to(:wallet) }
   end
 
