@@ -31,13 +31,12 @@ class Invoice < ApplicationRecord
 
   def assign_expires_at
     return if expires_at?
-    return unless wallet_id?
 
     # Rails has not yet set the wallet object
     wallet ||= Wallet.find(wallet_id)
     return unless wallet.default_expiry_ttl?
 
-    self.expires_at = Time.current + wallet.default_expiry_ttl&.minutes
+    self.expires_at = Time.current + wallet.default_expiry_ttl.minutes
   end
 
   def generate_incoming_address

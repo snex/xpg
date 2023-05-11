@@ -14,7 +14,7 @@ RSpec.describe Invoice do
   describe 'validations' do
     subject { build(:invoice, wallet: wallet) }
 
-    let(:wallet) { build(:wallet) }
+    let(:wallet) { create(:wallet) }
 
     before { allow(wallet).to receive(:generate_incoming_address).and_return('abcd1234') }
 
@@ -47,8 +47,8 @@ RSpec.describe Invoice do
     end
 
     context 'when no expires_at is set' do
-      let(:wallet) { build(:wallet, default_expiry_ttl: nil) }
-      let(:invoice) { build(:invoice, expires_at: nil) }
+      let(:wallet) { create(:wallet, default_expiry_ttl: nil) }
+      let(:invoice) { build(:invoice, wallet: wallet, expires_at: nil) }
 
       it 'cannot save the wallet due to a missing expires_at' do
         expect { invoice.save }.not_to change(invoice, :id)

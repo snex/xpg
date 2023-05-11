@@ -12,7 +12,10 @@ RSpec.describe '/invoices' do
     }
   end
   let(:invalid_attributes) do
-    { wallet_id: '' }
+    {
+      wallet_id: wallet.id,
+      amount:    'lolwut'
+    }
   end
 
   before { allow(wallet).to receive(:generate_incoming_address).and_return('1234') }
