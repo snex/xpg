@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
-
 RSpec.describe 'wallets/show' do
   let(:wallet) { create(:wallet, :with_default_expiry_ttl) }
 

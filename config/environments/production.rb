@@ -85,5 +85,8 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
+  Rails.application.routes.default_url_options[:host] = 'localhost:5000'
+  config.active_storage.service = :local
+
   config.monero_daemon_port = ENV['MONERO_DAEMON_PORT'] || '18081'
 end

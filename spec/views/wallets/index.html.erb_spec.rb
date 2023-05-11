@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
-
 RSpec.describe 'wallets/index' do
   let(:wallets) { create_list(:named_wallet, 2, pid: 3) }
 

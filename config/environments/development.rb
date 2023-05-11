@@ -67,5 +67,8 @@ Rails.application.configure do
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
 
+  Rails.application.routes.default_url_options[:host] = 'localhost:5000'
+  config.active_storage.service = :local
+
   config.monero_daemon_port = ENV['MONERO_DAEMON_PORT'] || '38081'
 end

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
-
 RSpec.describe Invoice do
   let(:invoice) { build(:invoice) }
 
@@ -10,6 +8,7 @@ RSpec.describe Invoice do
 
     it { is_expected.to belong_to(:wallet) }
     it { is_expected.to have_many(:payments).dependent(:restrict_with_error) }
+    it { is_expected.to have_one_attached(:qr_code) }
   end
 
   describe 'validations' do
@@ -27,6 +26,34 @@ RSpec.describe Invoice do
     it { is_expected.to validate_presence_of(:callback_url) }
     it { is_expected.to validate_uniqueness_of(:incoming_address).scoped_to(:payment_id) }
     it { is_expected.to validate_url_of(:callback_url) }
+  end
+
+  describe 'before_validation :assign_expires_at' do
+    context 'when expires_at is already present' do
+      it 'accepts the passed in value' do
+        expect { invoice.save }.not_to change(invoice, :expires_at)
+      end
+    end
+
+    context 'when expires_at comes from the wallet' do
+      let(:wallet) { create(:wallet, default_expiry_ttl: 30) }
+      let(:invoice) { build(:invoice, wallet: wallet, expires_at: nil) }
+
+      before { allow(Time).to receive(:current).and_return(DateTime.new(2000, 1, 1, 0, 0, 0)) }
+
+      it 'uses curren time plus the default value on the wallet, in minutes' do
+        expect { invoice.save }.to change(invoice, :expires_at).from(nil).to(DateTime.new(2000, 1, 1, 0, 30, 0))
+      end
+    end
+
+    context 'when no expires_at is set' do
+      let(:wallet) { build(:wallet, default_expiry_ttl: nil) }
+      let(:invoice) { build(:invoice, expires_at: nil) }
+
+      it 'cannot save the wallet due to a missing expires_at' do
+        expect { invoice.save }.not_to change(invoice, :id)
+      end
+    end
   end
 
   describe 'before_create :generate_incoming_address' do
@@ -60,31 +87,20 @@ RSpec.describe Invoice do
     end
   end
 
-  describe 'before_validation :assign_expires_at' do
-    context 'when expires_at is already present' do
-      it 'accepts the passed in value' do
-        expect { invoice.save }.not_to change(invoice, :expires_at)
-      end
+  describe 'before_create :generate_qr_code' do
+    let(:invoice) { build(:invoice) }
+    let(:xmr) { instance_double(XMR) }
+
+    before do
+      allow(XMR).to receive(:new).and_return(xmr)
+      allow(xmr).to receive(:pmt_uri).and_return('hello')
     end
 
-    context 'when expires_at comes from the wallet' do
-      let(:wallet) { create(:wallet, default_expiry_ttl: 30) }
-      let(:invoice) { build(:invoice, wallet: wallet, expires_at: nil) }
+    it 'attaches the QR code to the invoice' do
+      invoice.save
+      invoice.reload
 
-      before { allow(Time).to receive(:current).and_return(DateTime.new(2000, 1, 1, 0, 0, 0)) }
-
-      it 'uses curren time plus the default value on the wallet, in minutes' do
-        expect { invoice.save }.to change(invoice, :expires_at).from(nil).to(DateTime.new(2000, 1, 1, 0, 30, 0))
-      end
-    end
-
-    context 'when no expires_at is set' do
-      let(:wallet) { build(:wallet, default_expiry_ttl: nil) }
-      let(:invoice) { build(:invoice, expires_at: nil) }
-
-      it 'cannot save the wallet due to a missing expires_at' do
-        expect { invoice.save }.not_to change(invoice, :id)
-      end
+      expect(invoice.qr_code.checksum).to eq('cFs5MxOcFuS8VKCg80Chvg==')
     end
   end
 

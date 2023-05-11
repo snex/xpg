@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
 RSpec.describe SpawnMoneroRpcWalletsJob, type: :job do
   let!(:wallet) { create(:wallet) }
 

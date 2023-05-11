@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
-
 RSpec.describe MoneroRpcService do
   let(:wallet) { build(:wallet) }
   let(:rpc_service) { described_class.new(wallet) }

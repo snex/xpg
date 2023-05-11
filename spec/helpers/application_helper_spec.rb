@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
-
 RSpec.describe ApplicationHelper do
   describe '#place_active_tab_class' do
     subject { helper.place_active_tab_class(:test) }

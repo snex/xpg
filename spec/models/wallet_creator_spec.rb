@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
-
 RSpec.describe WalletCreator do
   it 'includes ActiveModel::Model' do
     expect(described_class.ancestors).to include(ActiveModel::Model)

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
-
 RSpec.describe PaymentsController do
   describe 'routing' do
     it 'routes to #process_transaction' do

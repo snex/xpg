@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
-
 RSpec.describe WalletFileService::RpcWalletFileService do
   let(:wallet) { create(:wallet) }
   let(:rwfs) { described_class.new(wallet) }

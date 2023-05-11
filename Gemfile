@@ -52,6 +52,9 @@ gem 'font-awesome-rails'
 # Custom validators
 gem 'validate_url'
 
+# QR code generation
+gem 'rqrcode'
+
 # monero gem
 gem 'monero', path: '/home/snex/github/ruby/monero'
 
