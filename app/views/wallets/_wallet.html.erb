@@ -1,7 +1,7 @@
 <div id="<%= dom_id wallet %>" class="card col-lg-4">
   <div class="card-body">
     <h2 class="card-title">
-      <%= link_to wallet.name, edit_wallet_path(wallet), class: 'link-dark' %>
+      <%= link_to fa_icon('pencil-square', text: wallet.name), edit_wallet_path(wallet), class: 'link-dark' %>
     </h2>
 
     <p>
