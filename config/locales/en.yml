@@ -34,6 +34,11 @@ en:
     label:
       wallet:
         default_expiry_ttl: 'Default Invoice Expiration Time (mins)'
+
+  misc:
+    minutes: 'minutes'
+    n_a:     'N/A'
+
   wallet:
     created:    'Wallet was successfully created.'
     updated:    'Wallet was successfully updated.'

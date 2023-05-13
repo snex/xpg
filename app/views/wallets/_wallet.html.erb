@@ -11,19 +11,13 @@
       </span>
     </p>
 
-    <a class="link-dark" role="button" data-bs-toggle="collapse" data-bs-target="#detailsWallet<%= wallet.id %>">
-      <%= fa_icon 'angle-down', text: 'Details' %>
-    </a>
-    <div id="detailsWallet<%= wallet.id %>" class="collapse">
-      <p>
-        <strong>Port:</strong>
-        <%= wallet.port %>
+    <p>
+      <strong>Port:</strong>
+      <%= wallet.port %>
+    </p>
+    <p>
+      <strong><%= label(:wallet, :default_expiry_ttl) %>:</strong>
+        <%= display_default_expiry_ttl(wallet) %>
       </p>
-      <p>
-        <strong><%= label(:wallet, :default_expiry_ttl) %>:</strong>
-          <%= wallet.default_expiry_ttl %> minutes
-        </p>
-    </div>
-
   </div>
 </div>
