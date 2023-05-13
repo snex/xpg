@@ -24,7 +24,8 @@ module WalletFileService
       '%port%'      => @wallet.port.to_s,
       '%name%'      => @wallet.name,
       '%password%'  => @wallet.password,
-      '%id%'        => @wallet.id.to_s
+      '%id%'        => @wallet.id.to_s,
+      '%tx_notify%' => Rails.root.join('lib', 'process_tx.sh')
     }
   end
 end
