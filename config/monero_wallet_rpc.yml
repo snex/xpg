@@ -1,11 +1,11 @@
 development:
-  create_wallet: 'rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-dir=wallets/&stagenet=true&daemon-host=%daemon%'
-  rpc_wallet:    'rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-file=wallets/%name%&password=%password%&stagenet=true&daemon-host=%daemon%&tx-notify=%tx_notify% %id% %s'
+  create_wallet: 'log-file=/dev/null&rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-dir=wallets/&stagenet=true&daemon-host=%daemon%'
+  rpc_wallet:    'log-file=/dev/null&rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-file=wallets/%name%&password=%password%&stagenet=true&daemon-host=%daemon%&tx-notify=%tx_notify% %id% %s'
 
 test:
-  create_wallet: 'rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-dir=wallets/&stagenet=true&daemon-host=%daemon%'
-  rpc_wallet:    'rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-file=wallets/%name%&password=%password%&stagenet=true&daemon-host=%daemon%&tx-notify=%tx_notify% %id% %s'
+  create_wallet: 'log-file=/dev/null&rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-dir=wallets/&stagenet=true&daemon-host=%daemon%'
+  rpc_wallet:    'log-file=/dev/null&rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-file=wallets/%name%&password=%password%&stagenet=true&daemon-host=%daemon%&tx-notify=%tx_notify% %id% %s'
 
 production:
-  create_wallet: 'rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-dir=wallets/&daemon-host=%daemon%'
-  rpc_wallet:    'rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-file=wallets/%name%&password=%password%&daemon-host=%daemon%&tx-notify=%tx_notify% %id% %s'
+  create_wallet: 'log-file=/dev/null&rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-dir=wallets/&daemon-host=%daemon%'
+  rpc_wallet:    'log-file=/dev/null&rpc-login=%rpc_creds%&rpc-bind-port=%port%&wallet-file=wallets/%name%&password=%password%&daemon-host=%daemon%&tx-notify=%tx_notify% %id% %s'
