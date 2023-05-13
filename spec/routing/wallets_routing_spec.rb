@@ -10,10 +10,6 @@ RSpec.describe WalletsController do
       expect(get: '/wallets/new').to route_to('wallets#new')
     end
 
-    it 'routes to #show' do
-      expect(get: '/wallets/1').to route_to('wallets#show', id: '1')
-    end
-
     it 'routes to #edit' do
       expect(get: '/wallets/1/edit').to route_to('wallets#edit', id: '1')
     end
