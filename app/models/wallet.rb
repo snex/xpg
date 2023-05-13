@@ -4,6 +4,7 @@ class Wallet < ApplicationRecord
   has_many :invoices, dependent: :restrict_with_error
 
   validates :name, presence: true, uniqueness: true
+  validates :name, format: { with: /\A[a-zA-Z]+[\w-]*\z/, message: I18n.t('wallet.name_format_error') }
   validates :port, presence: true, uniqueness: true
   validates :default_expiry_ttl, numericality: { only_integer: true, allow_nil: true }
 

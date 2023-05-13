@@ -40,6 +40,7 @@ en:
     n_a:     'N/A'
 
   wallet:
+    name_format_error: 'must start with a letter and contain only letters, numbers, hyphens (-) and underscores (_)'
     created:    'Wallet was successfully created.'
     updated:    'Wallet was successfully updated.'
     destroyed:  'Wallet was successfully destroyed.'

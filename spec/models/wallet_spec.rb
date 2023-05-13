@@ -12,6 +12,9 @@ RSpec.describe Wallet do
 
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:name) }
+    it { is_expected.to allow_value('wallet-1_foo').for(:name) }
+    it { is_expected.not_to allow_value('2wallet').for(:name).with_message(I18n.t('wallet.name_format_error')) }
+    it { is_expected.not_to allow_value('wallet&').for(:name).with_message(I18n.t('wallet.name_format_error')) }
     it { is_expected.to validate_presence_of(:port) }
     it { is_expected.to validate_uniqueness_of(:port) }
     it { is_expected.to validate_numericality_of(:default_expiry_ttl).only_integer.allow_nil }
