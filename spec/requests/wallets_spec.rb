@@ -15,15 +15,6 @@ RSpec.describe '/wallets' do
     end
   end
 
-  describe 'GET /show' do
-    let(:wallet) { create(:wallet) }
-
-    it 'renders a successful response' do
-      get wallet_url(wallet)
-      expect(response).to be_successful
-    end
-  end
-
   describe 'GET /new' do
     it 'renders a successful response' do
       get new_wallet_url
@@ -50,7 +41,7 @@ RSpec.describe '/wallets' do
 
       it 'redirects to the created wallet' do
         post wallets_url, params: { wallet: valid_attributes }
-        expect(response).to redirect_to(wallet_url(Wallet.last))
+        expect(response).to redirect_to(wallets_url)
       end
     end
 
@@ -85,7 +76,7 @@ RSpec.describe '/wallets' do
       it 'redirects to the wallet' do
         patch wallet_url(wallet), params: { wallet: new_attributes }
         wallet.reload
-        expect(response).to redirect_to(wallet_url(wallet))
+        expect(response).to redirect_to(wallets_url)
       end
     end
 
