@@ -34,6 +34,8 @@ en:
     label:
       wallet:
         default_expiry_ttl: 'Default Invoice Expiration Time (mins)'
+        port:               'Port'
+        status:             'Status'
 
   misc:
     minutes: 'minutes'
@@ -41,9 +43,21 @@ en:
 
   wallet:
     name_format_error: 'must start with a letter and contain only letters, numbers, hyphens (-) and underscores (_)'
+
+    editing:    'Editing wallet'
+    new:        'New wallet'
+    back:       'Back to wallets list'
     created:    'Wallet was successfully created.'
     updated:    'Wallet was successfully updated.'
     destroyed:  'Wallet was successfully destroyed.'
+
+    placeholder:
+      address:            'Your PRIMARY XMR Address for this Wallet'
+      default_expiry_ttl: 'The Default Expiration Time in Minutes for Invoices in this Wallet'
+      name:               'The Name for this Wallet'
+      port:               "The Port for this Wallet's RPC Service"
+      view_key:           'Your SECRET View Key for this wallet'
+
     status:
       building: 'Building Monero wallet'
       running:  'Running (pid: %{pid})'

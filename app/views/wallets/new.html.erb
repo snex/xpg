@@ -4,23 +4,23 @@
   <%= render 'form_errors', wallet: @wallet %>
   <div class="col-md-6">
     <%= form.label :address, class: 'form-label' %>
-    <%= form.text_field :address, class: 'form-control', placeholder: 'Your PRIMARY XMR Address for this Wallet' %>
+    <%= form.text_field :address, class: 'form-control', placeholder: t('wallet.placeholder.address') %>
   </div>
   <div class="col-md-6">
     <%= form.label :view_key, class: 'form-label' %>
-    <%= form.text_field :view_key, class: 'form-control', placeholder: 'Your SECRET View Key for this wallet' %>
+    <%= form.text_field :view_key, class: 'form-control', placeholder: t('wallet.placeholder.view_key') %>
   </div>
   <div class="col-md-6">
     <%= form.label :name, class: 'form-label' %>
-    <%= form.text_field :name, class: 'form-control', placeholder: 'The Name for this Wallet' %>
+    <%= form.text_field :name, class: 'form-control', placeholder: t('wallet.placeholder.name') %>
   </div>
   <div class="col-md-6">
     <%= form.label :port, class: 'form-label' %>
-    <%= form.number_field :port, class: 'form-control', placeholder: 'The Port for this Wallet\'s RPC Service' %>
+    <%= form.number_field :port, class: 'form-control', placeholder: t('wallet.placeholder.port') %>
   </div>
   <div class="col-md-6">
     <%= form.label :default_expiry_ttl, class: 'form-label' %>
-    <%= form.number_field :default_expiry_ttl, class: 'form-control', placeholder: 'The Default Expiration Time in Minutes for Invoices in this Wallet' %>
+    <%= form.number_field :default_expiry_ttl, class: 'form-control', placeholder: t('wallet.placeholder.default_expiry_ttl') %>
   </div>
   <div>
     <%= form.submit class: 'btn btn-dark' %>
@@ -30,5 +30,5 @@
 <br>
 
 <div>
-  <%= link_to "Back to wallets", wallets_path, class: 'link-dark' %>
+  <%= link_to t('wallet.back'), wallets_path, class: 'link-dark' %>
 </div>
