@@ -20,9 +20,9 @@
         <%= wallet.port %>
       </p>
       <p>
-        <strong>Default Expiry TTL (mins):</strong>
-        <%= wallet.default_expiry_ttl %>
-      </p>
+        <strong><%= label(:wallet, :default_expiry_ttl) %>:</strong>
+          <%= wallet.default_expiry_ttl %> minutes
+        </p>
     </div>
 
   </div>
