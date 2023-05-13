@@ -35,6 +35,8 @@ module Xpg
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
+    config.i18n.default_locale = ENV['LOCALE'] || :en
+
     config.monero_daemon = ENV['MONERO_DAEMON'] || '127.0.0.1'
     config.monero_wallet_rpc = config_for(:monero_wallet_rpc)
 
