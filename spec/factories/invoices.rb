@@ -9,5 +9,6 @@ FactoryBot.define do
     incoming_address { SecureRandom.uuid }
     payment_id       { SecureRandom.uuid }
     callback_url     { Faker::Internet.url }
+    qr_code          { Rack::Test::UploadedFile.new(Rails.root.join('spec/support/hello.svg')) }
   end
 end

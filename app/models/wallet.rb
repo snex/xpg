@@ -24,26 +24,22 @@ class Wallet < ApplicationRecord
     update(ready_to_run: true)
   end
 
-  def generate_incoming_address
-    monero_rpc_service&.generate_incoming_address
+  def transfer_details(monero_tx_id)
+    monero_rpc_service&.transfer_details(monero_tx_id)
   end
 
   def process_transaction(monero_tx_id)
     # the RPC wallet can trigger multiple notifications per tx, so just quit if we already saw it
     return if Payment.exists?(monero_tx_id: monero_tx_id)
 
-    tx_details = monero_rpc_service.transfer_details(monero_tx_id)
-    payment_id = tx_details['transfer']['payment_id']
-    amount = tx_details['transfer']['amount']
-    invoice = invoices.find_by(payment_id: payment_id)
+    tx_details = transfer_details(monero_tx_id)
+    invoice = invoices.find_by(payment_id: tx_details.payment_id)
 
     return if invoice.blank?
 
     # TODO: do something with unlock time?
-    # TODO: enqueue a job to check the payment for confirmations?
-    Payment.create!(invoice: invoice, amount: amount, monero_tx_id: monero_tx_id)
-
-    # TODO: ping the callback url and record the result
+    payment = Payment.create!(invoice: invoice, amount: tx_details.amount, monero_tx_id: monero_tx_id)
+    CheckPaymentConfirmationsJob.perform_async(payment.id)
   end
 
   def status

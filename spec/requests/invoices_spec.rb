@@ -18,8 +18,6 @@ RSpec.describe '/invoices' do
     }
   end
 
-  before { allow(wallet).to receive(:generate_incoming_address).and_return('1234') }
-
   describe 'POST /create' do
     let(:rpc) { instance_double(MoneroRpcService) }
 
@@ -28,6 +26,8 @@ RSpec.describe '/invoices' do
       allow(MoneroRpcService).to receive(:new).and_return(rpc)
       allow(rpc).to receive(:generate_incoming_address).and_return({ 'integrated_address' => '1234',
                                                                      'payment_id'         => '4321' })
+      allow(rpc).to receive(:generate_uri).and_return('hello')
+      allow(rpc).to receive(:estimated_confirm_time).and_return(2.minutes)
     end
 
     context 'with valid parameters' do
