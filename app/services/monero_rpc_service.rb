@@ -17,12 +17,14 @@ class MoneroRpcService
     @drpc.get_info['height']
   end
 
-  def avg_block_time(num_blocks = 50)
-    last_n_block_headers(num_blocks)
-      .pluck('timestamp')
-      .each_cons(2)
-      .map { |timestamp| timestamp.last - timestamp.first }
-      .sum / (num_blocks - 1)
+  def avg_block_time(num_blocks = 720)
+    Rails.cache.fetch('xpg:avg_block_time', expires_in: 1.hour) do
+      last_n_block_headers(num_blocks)
+        .pluck('timestamp')
+        .each_cons(2)
+        .map { |timestamp| timestamp.last - timestamp.first }
+        .sum / (num_blocks - 1)
+    end
   end
 
   def estimated_confirm_time(amount)
