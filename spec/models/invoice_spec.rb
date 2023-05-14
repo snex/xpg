@@ -12,11 +12,7 @@ RSpec.describe Invoice do
   end
 
   describe 'validations' do
-    subject { build(:invoice, wallet: wallet) }
-
-    let(:wallet) { create(:wallet) }
-
-    before { allow(wallet).to receive(:generate_incoming_address).and_return('abcd1234') }
+    subject { create(:invoice) }
 
     it { is_expected.to validate_presence_of(:amount) }
     it { is_expected.to validate_numericality_of(:amount).only_integer.is_greater_than(0) }
@@ -57,13 +53,16 @@ RSpec.describe Invoice do
   end
 
   describe 'before_create :generate_incoming_address' do
-    let(:wallet) { build(:wallet) }
+    let(:rpc) { instance_double(MoneroRpcService) }
     let(:generated_address) { { 'integrated_address' => '12345', 'payment_id' => '54321' } }
 
-    before { allow(wallet).to receive(:generate_incoming_address).and_return(generated_address) }
+    before do
+      allow(invoice).to receive(:monero_rpc_service).and_return(rpc)
+      allow(rpc).to receive(:generate_incoming_address).and_return(generated_address)
+    end
 
     context 'when an incoming_address and pay_mentent_id was provided' do
-      let(:invoice) { build(:invoice, wallet: wallet, incoming_address: '54321', payment_id: '12345') }
+      let(:invoice) { build(:invoice, incoming_address: '54321', payment_id: '12345') }
 
       it 'does not overwrite the provided address' do
         expect { invoice.save }.not_to change(invoice, :incoming_address)
@@ -75,7 +74,7 @@ RSpec.describe Invoice do
     end
 
     context 'when an incoming_address and payment_id was not provided' do
-      let(:invoice) { build(:invoice, wallet: wallet, incoming_address: nil, payment_id: nil) }
+      let(:invoice) { build(:invoice, incoming_address: nil, payment_id: nil) }
 
       it 'generates an incoming address from the wallet' do
         expect { invoice.save }.to change(invoice, :incoming_address).from(nil).to('12345')
@@ -88,80 +87,139 @@ RSpec.describe Invoice do
   end
 
   describe 'before_create :generate_qr_code' do
-    let(:invoice) { build(:invoice) }
-    let(:xmr) { instance_double(XMR) }
+    let(:rpc) { instance_double(MoneroRpcService) }
 
     before do
-      allow(XMR).to receive(:new).and_return(xmr)
-      allow(xmr).to receive(:pmt_uri).and_return('hello')
+      allow(MoneroRpcService).to receive(:new).and_return(rpc)
+      allow(rpc).to receive(:generate_uri).and_return('hello')
     end
 
-    it 'attaches the QR code to the invoice' do
-      invoice.save
-      invoice.reload
+    context 'when a QR code is already attached' do
+      it 'does not overwrite the provided QR code' do
+        expect { invoice.save }.not_to change(invoice, :qr_code)
+      end
+    end
 
-      expect(invoice.qr_code.checksum).to eq('cFs5MxOcFuS8VKCg80Chvg==')
+    context 'when no QR code is attached' do
+      let(:invoice) { build(:invoice, qr_code: nil) }
+
+      it 'attaches the QR code to the invoice' do
+        invoice.save
+        invoice.reload
+
+        expect(invoice.qr_code.checksum).to eq('cFs5MxOcFuS8VKCg80Chvg==')
+      end
     end
   end
 
-  describe '#status' do
-    subject { invoice.status }
+  describe '#estimated_confirm_time' do
+    subject(:estimated_confirm_time) { invoice.estimated_confirm_time }
 
-    let(:expires_at) { DateTime.new(2000, 1, 1, 0, 0, 0, '+00:00') }
-    let(:invoice) { create(:invoice, amount: 10, expires_at: expires_at) }
+    let(:rpc) { instance_double(MoneroRpcService) }
 
-    context 'when 1 payment amount exceeds invoice amount' do
-      before { create(:payment, invoice: invoice, amount: 11) }
-
-      it { is_expected.to contain_exactly(:overpaid) }
+    before do
+      allow(MoneroRpcService).to receive(:new).and_return(rpc)
+      allow(rpc).to receive(:estimated_confirm_time)
     end
 
-    context 'when the sum of multiple payments exceeds the invoice amount' do
-      before { create_list(:payment, 2, invoice: invoice, amount: 6) }
+    it 'calls the MoneroRpcService' do
+      estimated_confirm_time
 
-      it { is_expected.to contain_exactly(:overpaid) }
+      expect(rpc).to have_received(:estimated_confirm_time).with(invoice.amount.to_i).once
     end
+  end
 
-    context 'when 1 payment amount is exactly the invoice amount' do
-      before { create(:payment, invoice: invoice, amount: 10) }
+  describe '#paid?' do
+    subject { invoice.paid? }
 
-      it { is_expected.to contain_exactly(:paid) }
-    end
+    let(:invoice) { build(:invoice, amount: 2) }
+    let!(:payments) { create_list(:payment, 3, invoice: invoice, amount: 1) }
 
-    context 'when the sum of multiple payments is exactly the invoice amount' do
-      before { create_list(:payment, 2, invoice: invoice, amount: 5) }
+    before { allow(invoice).to receive(:payments).and_return(payments) }
 
-      it { is_expected.to contain_exactly(:paid) }
-    end
-
-    context 'when there are no payments and the invoice expires in the future' do
-      before { allow(Time).to receive(:current).and_return(expires_at - 1.day) }
-
-      it { is_expected.to contain_exactly(:unpaid, :payable) }
-    end
-
-    context 'when there are no payments and the invoice expired' do
-      before { allow(Time).to receive(:current).and_return(expires_at + 1.day) }
-
-      it { is_expected.to contain_exactly(:unpaid, :overdue) }
-    end
-
-    context 'when 1 payment amount is less than the invoice amount and the invoice expired' do
+    context 'when the confirmed payments < the invoice amount' do
       before do
-        create(:payment, invoice: invoice, amount: 4)
-        allow(Time).to receive(:current).and_return(expires_at + 1.day)
+        allow(payments[0]).to receive(:confirmed?).and_return(true)
+        allow(payments[1]).to receive(:confirmed?).and_return(false)
+        allow(payments[2]).to receive(:confirmed?).and_return(false)
       end
 
-      it { is_expected.to contain_exactly(:unpaid, :overdue) }
+      it { is_expected.to be false }
     end
 
-    context 'when the sum of multiple payments is less than the invoice amount and the invoice expired' do
+    context 'when the confirmed payments = the invoice amount' do
       before do
-        create_list(:payment, 2, invoice: invoice, amount: 4)
-        allow(Time).to receive(:current).and_return(expires_at + 1.day)
+        allow(payments[0]).to receive(:confirmed?).and_return(true)
+        allow(payments[1]).to receive(:confirmed?).and_return(true)
+        allow(payments[2]).to receive(:confirmed?).and_return(false)
       end
 
-      it { is_expected.to contain_exactly(:unpaid, :overdue) }
+      it { is_expected.to be true }
+    end
+
+    context 'when the confirmed payments > the invoice amount' do
+      before do
+        allow(payments[0]).to receive(:confirmed?).and_return(true)
+        allow(payments[1]).to receive(:confirmed?).and_return(true)
+        allow(payments[2]).to receive(:confirmed?).and_return(true)
+      end
+
+      it { is_expected.to be true }
+    end
+  end
+
+  describe '#unpaid?' do
+    subject { invoice.unpaid? }
+
+    context 'when the invoice is paid' do
+      before { allow(invoice).to receive(:paid?).and_return(true) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when the invoice is unpaid' do
+      before { allow(invoice).to receive(:paid?).and_return(false) }
+
+      it { is_expected.to be true }
+    end
+  end
+
+  describe '#overpaid?' do
+    subject { invoice.overpaid? }
+
+    let(:invoice) { build(:invoice, amount: 2) }
+    let!(:payments) { create_list(:payment, 3, invoice: invoice, amount: 1) }
+
+    before { allow(invoice).to receive(:payments).and_return(payments) }
+
+    context 'when the confirmed payments < the invoice amount' do
+      before do
+        allow(payments[0]).to receive(:confirmed?).and_return(true)
+        allow(payments[1]).to receive(:confirmed?).and_return(false)
+        allow(payments[2]).to receive(:confirmed?).and_return(false)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when the confirmed payments = the invoice amount' do
+      before do
+        allow(payments[0]).to receive(:confirmed?).and_return(true)
+        allow(payments[1]).to receive(:confirmed?).and_return(true)
+        allow(payments[2]).to receive(:confirmed?).and_return(false)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when the confirmed payments > the invoice amount' do
+      before do
+        allow(payments[0]).to receive(:confirmed?).and_return(true)
+        allow(payments[1]).to receive(:confirmed?).and_return(true)
+        allow(payments[2]).to receive(:confirmed?).and_return(true)
+      end
+
+      it { is_expected.to be true }
     end
   end
 end

@@ -17,6 +17,20 @@ class MoneroRpcService
     @drpc.get_info['height']
   end
 
+  def avg_block_time(num_blocks = 50)
+    last_n_block_headers(num_blocks)
+      .pluck('timestamp')
+      .each_cons(2)
+      .map { |timestamp| timestamp.last - timestamp.first }
+      .sum / (num_blocks - 1)
+  end
+
+  def estimated_confirm_time(amount)
+    reward = @drpc.get_last_block_header['block_header']['reward']
+
+    ((avg_block_time * (amount / reward).clamp(1, 10)) / 60).minutes
+  end
+
   def create_rpc_wallet(address, view_key)
     @rpc.generate_view_wallet(@wallet.name, address, @wallet.password, view_key, current_height)
     @rpc.stop_wallet
@@ -26,7 +40,18 @@ class MoneroRpcService
     @rpc.make_integrated_address
   end
 
+  def generate_uri(address, amount)
+    @rpc.make_uri(address, amount)['uri']
+  end
+
   def transfer_details(tx_id)
     @rpc.get_transfer_by_txid(tx_id)
+  end
+
+  private
+
+  def last_n_block_headers(num_blocks)
+    cur_height = current_height
+    @drpc.get_block_headers_range(cur_height - num_blocks - 1, cur_height - 1)['headers']
   end
 end

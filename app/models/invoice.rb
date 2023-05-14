@@ -20,11 +20,20 @@ class Invoice < ApplicationRecord
   before_validation :assign_expires_at
   before_create :generate_incoming_address, :generate_qr_code
 
-  def status
-    status = [payment_status]
-    status << expiration_status if status.include?(:unpaid)
+  def estimated_confirm_time
+    monero_rpc_service.estimated_confirm_time(amount.to_i)
+  end
 
-    status
+  def paid?
+    amount_paid >= amount.to_i
+  end
+
+  def unpaid?
+    !paid?
+  end
+
+  def overpaid?
+    amount_paid > amount.to_i
   end
 
   private
@@ -39,40 +48,29 @@ class Invoice < ApplicationRecord
     self.expires_at = Time.current + wallet.default_expiry_ttl.minutes
   end
 
+  def monero_rpc_service
+    @monero_rpc_service ||= MoneroRpcService.new(wallet)
+  end
+
   def generate_incoming_address
     return if incoming_address? && payment_id?
 
-    integrated_address = wallet.generate_incoming_address
+    integrated_address = monero_rpc_service.generate_incoming_address
     self.incoming_address ||= integrated_address['integrated_address']
     self.payment_id ||= integrated_address['payment_id']
   end
 
   def generate_qr_code
-    payment_uri = XMR.new(amount).pmt_uri(incoming_address, payment_id)
+    return if qr_code.attached?
+
+    payment_uri = monero_rpc_service.generate_uri(incoming_address, amount)
     qr_code.attach(
       io:       StringIO.new(RQRCode::QRCode.new(payment_uri).as_svg),
       filename: "#{incoming_address}.svg"
     )
   end
 
-  def payment_status
-    # encrypted column means we cant sum it in the database
-    amount_paid = payments.pluck(:amount).map(&:to_i).sum
-
-    if amount_paid > amount.to_i
-      :overpaid
-    elsif amount_paid < amount.to_i
-      :unpaid
-    else
-      :paid
-    end
-  end
-
-  def expiration_status
-    if Time.current < expires_at
-      :payable
-    else
-      :overdue
-    end
+  def amount_paid
+    @amount_paid ||= payments.select(&:confirmed?).pluck(:amount).map(&:to_i).sum
   end
 end

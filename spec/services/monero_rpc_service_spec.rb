@@ -22,6 +22,52 @@ RSpec.describe MoneroRpcService do
     it { is_expected.to eq(69_420) }
   end
 
+  describe '#avg_block_time' do
+    subject { rpc_service.avg_block_time(3) }
+
+    let(:block_headers) do
+      { 'headers' => [
+        { 'timestamp' =>  1 },
+        { 'timestamp' =>  5 },
+        { 'timestamp' => 11 }
+      ] }
+    end
+
+    before do
+      allow(rpc_service).to receive(:current_height).and_return(100)
+      allow(drpc).to receive(:get_block_headers_range).and_return(block_headers)
+    end
+
+    it { is_expected.to eq(5) }
+  end
+
+  describe '#estimated_confirm_time' do
+    subject { rpc_service.estimated_confirm_time(100) }
+
+    before do
+      allow(drpc).to receive(:get_last_block_header).and_return({ 'block_header' => { 'reward' => reward } })
+      allow(rpc_service).to receive(:avg_block_time).and_return(120)
+    end
+
+    context 'when amount / reward is below 1' do
+      let(:reward) { 1_000 }
+
+      it { is_expected.to eq(2.minutes) }
+    end
+
+    context 'when amount / reward is above 10' do
+      let(:reward) { 1 }
+
+      it { is_expected.to eq(20.minutes) }
+    end
+
+    context 'when amount / reward is between 1 and 10' do
+      let(:reward) { rand(10..100) }
+
+      it { is_expected.to eq((2 * (100 / reward)).minutes) }
+    end
+  end
+
   describe '#create_rpc_wallet' do
     before do
       allow(drpc).to receive(:get_info).and_return({ 'height' => 0 })
@@ -48,11 +94,25 @@ RSpec.describe MoneroRpcService do
 
     before { allow(rpc).to receive(:make_integrated_address) }
 
-    it 'calls create_address' do
+    it 'calls make_integrated_address' do
       generate_incoming_address
 
       expect(rpc).to have_received(:make_integrated_address).once
     end
+  end
+
+  describe '#generate_uri' do
+    subject(:generate_uri) { rpc_service.generate_uri('1234', 1) }
+
+    before { allow(rpc).to receive(:make_uri).and_return({ 'uri' => 'hello' }) }
+
+    it 'calls make_uri' do
+      generate_uri
+
+      expect(rpc).to have_received(:make_uri).with('1234', 1).once
+    end
+
+    it { is_expected.to eq('hello') }
   end
 
   describe '#transfer_details' do

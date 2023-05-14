@@ -96,8 +96,8 @@ RSpec.describe Wallet do
     end
   end
 
-  describe '#generate_incoming_address' do
-    subject(:generate_incoming_address) { wallet.generate_incoming_address }
+  describe '#transfer_details' do
+    subject(:transfer_details) { wallet.transfer_details('1234') }
 
     let(:rpc) { instance_double(MoneroRpcService) }
 
@@ -107,7 +107,7 @@ RSpec.describe Wallet do
       let(:wallet) { build(:wallet, rpc_creds: nil) }
 
       it 'does not call MonerpRpcService.new' do
-        generate_incoming_address
+        transfer_details
 
         expect(MoneroRpcService).not_to have_received(:new)
       end
@@ -116,18 +116,18 @@ RSpec.describe Wallet do
     end
 
     context 'when RPC creds have been generated' do
-      before { allow(rpc).to receive(:generate_incoming_address).and_return('12345') }
+      before { allow(rpc).to receive(:transfer_details).and_return('12345') }
 
       it 'calls MoneroRpcService.new' do
-        generate_incoming_address
+        transfer_details
 
         expect(MoneroRpcService).to have_received(:new).once
       end
 
-      it 'calls create_incoming_address' do
-        generate_incoming_address
+      it 'calls transfer_details' do
+        transfer_details
 
-        expect(rpc).to have_received(:generate_incoming_address).once
+        expect(rpc).to have_received(:transfer_details).once
       end
 
       it { is_expected.to eq('12345') }
@@ -138,11 +138,13 @@ RSpec.describe Wallet do
     subject(:process_tx) { wallet.process_transaction('abcd') }
 
     let(:rpc) { instance_double(MoneroRpcService) }
+    let(:tx_in) { instance_double(MoneroRPC::IncomingTransfer) }
 
     before do
       allow(MoneroRpcService).to receive(:new).with(wallet).and_return(rpc)
-      allow(rpc).to receive(:transfer_details).with('abcd').and_return({ 'transfer' => { 'payment_id' => '1234',
-                                                                                         'amount'     => 1 } })
+      allow(rpc).to receive(:transfer_details).and_return(tx_in)
+      allow(tx_in).to receive(:payment_id).and_return('1234')
+      allow(tx_in).to receive(:amount).and_return(1)
     end
 
     context 'when the transaction has already been processed' do
