@@ -36,6 +36,10 @@ class Invoice < ApplicationRecord
     amount_paid > amount.to_i
   end
 
+  def partially_paid?
+    unpaid? && amount_paid.positive?
+  end
+
   private
 
   def assign_expires_at

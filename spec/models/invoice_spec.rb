@@ -222,4 +222,32 @@ RSpec.describe Invoice do
       it { is_expected.to be true }
     end
   end
+
+  describe '#partially_paid?' do
+    subject { invoice.partially_paid? }
+
+    context 'when invoice is paid' do
+      before { allow(invoice).to receive(:paid?).and_return(true) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when invoice is not paid and amount_paid = 0' do
+      before do
+        allow(invoice).to receive(:paid?).and_return(false)
+        allow(invoice).to receive(:amount_paid).and_return(0)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when invoice is not paid and amount_paid > 0' do
+      before do
+        allow(invoice).to receive(:paid?).and_return(false)
+        allow(invoice).to receive(:amount_paid).and_return(1)
+      end
+
+      it { is_expected.to be true }
+    end
+  end
 end
