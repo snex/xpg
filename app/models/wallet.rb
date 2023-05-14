@@ -29,6 +29,9 @@ class Wallet < ApplicationRecord
   end
 
   def process_transaction(monero_tx_id)
+    # the RPC wallet can trigger multiple notifications per tx, so just quit if we already saw it
+    return if Payment.exists?(monero_tx_id: monero_tx_id)
+
     tx_details = monero_rpc_service.transfer_details(monero_tx_id)
     payment_id = tx_details['transfer']['payment_id']
     amount = tx_details['transfer']['amount']

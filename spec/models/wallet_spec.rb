@@ -145,6 +145,16 @@ RSpec.describe Wallet do
                                                                                          'amount'     => 1 } })
     end
 
+    context 'when the transaction has already been processed' do
+      before { allow(Payment).to receive(:exists?).and_return(true) }
+
+      it 'does not call the RPC service' do
+        process_tx
+
+        expect(rpc).not_to have_received(:transfer_details)
+      end
+    end
+
     context 'when there is no invoice expecting a transaction' do
       before { allow(wallet).to receive(:invoices).and_return(Invoice.none) }
 
