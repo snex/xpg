@@ -260,4 +260,25 @@ RSpec.describe Invoice do
       it { is_expected.to be true }
     end
   end
+
+  describe '#callback' do
+    subject(:callback) { invoice.callback }
+
+    before do
+      allow(URI).to receive(:parse)
+      allow(Net::HTTP).to receive(:get)
+    end
+
+    it 'calls URI.parse' do
+      callback
+
+      expect(URI).to have_received(:parse).with(invoice.callback_url)
+    end
+
+    it 'calls Net::HTTP.get' do
+      callback
+
+      expect(Net::HTTP).to have_received(:get).with(URI.parse(invoice.callback_url))
+    end
+  end
 end

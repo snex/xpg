@@ -9,14 +9,12 @@ class CheckInvoicePaymentsJob
     return if invoice.unpaid?
 
     if invoice.overpaid?
-      # enqueue a job to send an email about an overpayment
-      Rails.logger.error('overpaid')
+      HandleOverpaymentJob.perform_async(invoice.id)
+    elsif invoice.paid?
+      HandlePaymentJob.perform_async(invoice.id)
+    else
+      # TODO: replace exception with email
+      raise 'wtf'
     end
-
-    Rails.logger.error('paid')
-
-    # ping callback URL
-    #
-    # enqueue a job to delete the invoice and all payments
   end
 end

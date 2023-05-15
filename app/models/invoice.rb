@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'net/http'
+
 class Invoice < ApplicationRecord
   belongs_to :wallet
 
@@ -40,6 +42,10 @@ class Invoice < ApplicationRecord
 
   def partially_paid?
     unpaid? && amount_paid.positive?
+  end
+
+  def callback
+    Net::HTTP.get(URI.parse(callback_url))
   end
 
   private
