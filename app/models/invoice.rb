@@ -20,6 +20,8 @@ class Invoice < ApplicationRecord
   before_validation :assign_expires_at
   before_create :generate_incoming_address, :generate_qr_code
 
+  scope :expired, -> { where(expires_at: ..Time.current) }
+
   def estimated_confirm_time
     monero_rpc_service.estimated_confirm_time(amount.to_i)
   end

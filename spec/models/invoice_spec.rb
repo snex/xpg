@@ -112,6 +112,16 @@ RSpec.describe Invoice do
     end
   end
 
+  describe 'scope :expired' do
+    subject { described_class.expired }
+
+    let!(:expired) { create(:invoice, expires_at: 1.hour.ago) }
+
+    before { create(:invoice, expires_at: 1.hour.from_now) }
+
+    it { is_expected.to contain_exactly(expired) }
+  end
+
   describe '#estimated_confirm_time' do
     subject(:estimated_confirm_time) { invoice.estimated_confirm_time }
 
