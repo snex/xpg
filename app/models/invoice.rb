@@ -44,8 +44,29 @@ class Invoice < ApplicationRecord
     unpaid? && amount_paid.positive?
   end
 
-  def callback
+  def handle_payment_complete
     Net::HTTP.get(URI.parse(callback_url))
+  end
+
+  def handle_overpayment
+    # TODO: send email about overpayment
+    HandlePaymentJob.perform_async(id)
+  end
+
+  def handle_partial_payment
+    # TODO: send email about partial payment prior to delete
+    DeleteInvoiceJob.perform_async(id)
+  end
+
+  def gracefully_delete
+    if partially_paid?
+      handle_partial_payment
+      payments.destroy_all
+    else
+      payments.destroy_all
+      qr_code.purge
+      destroy
+    end
   end
 
   private

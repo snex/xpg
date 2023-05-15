@@ -4,10 +4,6 @@ class HandleOverpaymentJob
   include Sidekiq::Job
 
   def perform(invoice_id)
-    invoice = Invoice.find(invoice_id)
-
-    # TODO: send email about overpayment
-
-    HandlePaymentJob.perform_async(invoice.id)
+    Invoice.find(invoice_id).handle_overpayment
   end
 end

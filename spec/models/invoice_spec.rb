@@ -261,24 +261,104 @@ RSpec.describe Invoice do
     end
   end
 
-  describe '#callback' do
-    subject(:callback) { invoice.callback }
+  describe '#handle_payment_complete' do
+    subject(:handle_payment_complete) { invoice.handle_payment_complete }
 
     before do
       allow(URI).to receive(:parse)
       allow(Net::HTTP).to receive(:get)
+      handle_payment_complete
     end
 
     it 'calls URI.parse' do
-      callback
-
       expect(URI).to have_received(:parse).with(invoice.callback_url)
     end
 
     it 'calls Net::HTTP.get' do
-      callback
-
       expect(Net::HTTP).to have_received(:get).with(URI.parse(invoice.callback_url))
+    end
+  end
+
+  describe '#handle_overpayment' do
+    subject(:handle_overpayment) { invoice.handle_overpayment }
+
+    let(:invoice) { create(:invoice) }
+
+    before { handle_overpayment }
+
+    xit 'sends an email about overpayment'
+
+    it 'enqueues a HandlePaymentJob' do
+      expect(HandlePaymentJob).to have_enqueued_sidekiq_job(invoice.id)
+    end
+  end
+
+  describe '#handle_partial_payment' do
+    subject(:handle_partial_payment) { invoice.handle_partial_payment }
+
+    let(:invoice) { create(:invoice) }
+
+    before { handle_partial_payment }
+
+    xit 'send an email about partial payment on an invoice queued for deletion'
+
+    it 'enqueues a DeleteInvoiceJob' do
+      expect(DeleteInvoiceJob).to have_enqueued_sidekiq_job(invoice.id)
+    end
+  end
+
+  describe '#gracefully_delete' do
+    subject(:gracefully_delete) { invoice.gracefully_delete }
+
+    let(:qr_code) { invoice.qr_code }
+    let!(:invoice) { create(:invoice, :with_payments) }
+
+    before { allow(invoice).to receive(:handle_partial_payment) }
+
+    context 'when the invoice is partially paid' do
+      before { allow(invoice).to receive(:partially_paid?).and_return(true) }
+
+      it 'calls handle_partial_payment' do
+        gracefully_delete
+
+        expect(invoice).to have_received(:handle_partial_payment)
+      end
+
+      it 'destroys the payments' do
+        expect { gracefully_delete }.to change(Payment, :count).from(3).to(0)
+      end
+
+      it 'does not remove the qr code' do
+        expect { gracefully_delete }.not_to change(qr_code, :reload)
+      end
+
+      it 'does not destroy the invoice' do
+        expect { gracefully_delete }.not_to change(described_class, :count)
+      end
+    end
+
+    context 'when the invoice is not partially paid' do
+      before { allow(invoice).to receive(:partially_paid?).and_return(false) }
+
+      it 'does not call handle_partial_payment' do
+        gracefully_delete
+
+        expect(invoice).not_to have_received(:handle_partial_payment)
+      end
+
+      xit 'deletes the invoice, any associated payments, and attached qr codes'
+
+      it 'destroys the payments' do
+        expect { gracefully_delete }.to change(Payment, :count).from(3).to(0)
+      end
+
+      it 'removes the qr code' do
+        expect { gracefully_delete }.to change(qr_code, :reload).to(nil)
+      end
+
+      it 'destroys the invoice' do
+        expect { gracefully_delete }.to change(described_class, :count).from(1).to(0)
+      end
     end
   end
 end

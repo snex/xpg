@@ -3,7 +3,7 @@
 class DeleteInvoiceJob
   include Sidekiq::Job
 
-  def perform(*args)
-    # Do something
+  def perform(invoice_id)
+    Invoice.find(invoice_id).gracefully_delete
   end
 end

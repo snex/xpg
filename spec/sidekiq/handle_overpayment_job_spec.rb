@@ -5,12 +5,11 @@ RSpec.describe HandleOverpaymentJob, type: :job do
 
   before do
     allow(Invoice).to receive(:find).and_return(invoice)
+    allow(invoice).to receive(:handle_overpayment)
     described_class.new.perform(invoice.id)
   end
 
-  xit 'sends an email about the overpayment'
-
-  it 'enqueues a HandlePaymentJob' do
-    expect(HandlePaymentJob).to have_enqueued_sidekiq_job(invoice.id)
+  it 'calls invoice.handle_overpayment' do
+    expect(invoice).to have_received(:handle_overpayment)
   end
 end

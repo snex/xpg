@@ -4,7 +4,6 @@ class HandlePaymentJob
   include Sidekiq::Job
 
   def perform(invoice_id)
-    invoice = Invoice.find(invoice_id)
-    invoice.callback
+    Invoice.find(invoice_id).handle_payment_complete
   end
 end

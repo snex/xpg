@@ -10,5 +10,9 @@ FactoryBot.define do
     payment_id       { SecureRandom.uuid }
     callback_url     { Faker::Internet.url }
     qr_code          { Rack::Test::UploadedFile.new(Rails.root.join('spec/support/hello.svg')) }
+
+    trait :with_payments do
+      payments { build_list(:payment, 3) }
+    end
   end
 end

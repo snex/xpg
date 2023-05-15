@@ -3,7 +3,9 @@
 class SweepExpiredInvoicesJob
   include Sidekiq::Job
 
-  def perform(*args)
-    # Do something
+  def perform
+    Invoice.expired.pluck(:id).each do |invoice_id|
+      DeleteInvoiceJob.perform_async(invoice_id)
+    end
   end
 end
