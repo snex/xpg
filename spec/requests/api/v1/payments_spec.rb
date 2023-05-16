@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe '/payments' do
+RSpec.describe 'api/v1/payments' do
   let!(:invoice) { create(:invoice) }
   let(:valid_attributes) do
     {
@@ -10,7 +10,7 @@ RSpec.describe '/payments' do
   end
   let(:attributes) { valid_attributes }
 
-  describe 'POST /process_transaction' do
+  describe 'POST api/v1/process_transaction' do
     before { post api_v1_process_transaction_url(transaction: attributes) }
 
     context 'when an invalid wallet_id is given' do

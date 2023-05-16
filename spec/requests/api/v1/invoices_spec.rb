@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe '/invoices' do
+RSpec.describe 'api/v1/invoices' do
   let!(:wallet) { create(:wallet) }
   let(:valid_attributes) do
     {
@@ -18,7 +18,7 @@ RSpec.describe '/invoices' do
     }
   end
 
-  describe 'POST /create' do
+  describe 'POST api/v1/create' do
     let(:rpc) { instance_double(MoneroRpcService) }
 
     # TODO: figure out a way to reduce the coupling here
