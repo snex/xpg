@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe HandlePaymentJob, type: :job do
+RSpec.describe HandlePaymentCompleteJob, type: :job do
   let(:invoice) { create(:invoice) }
 
   before do
@@ -10,6 +10,6 @@ RSpec.describe HandlePaymentJob, type: :job do
   end
 
   it 'calls invoice.handle_payment_complete' do
-    expect(invoice).to have_received(:handle_payment_complete)
+    expect(invoice).to have_received(:handle_payment_complete).once
   end
 end

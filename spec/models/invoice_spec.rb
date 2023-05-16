@@ -294,18 +294,12 @@ RSpec.describe Invoice do
   describe '#handle_payment_complete' do
     subject(:handle_payment_complete) { invoice.handle_payment_complete }
 
-    before do
-      allow(URI).to receive(:parse)
-      allow(Net::HTTP).to receive(:get)
+    before { allow(CallbackService).to receive(:handle_payment_complete) }
+
+    it 'calls CallbackService.handle_payment_complete' do
       handle_payment_complete
-    end
 
-    it 'calls URI.parse' do
-      expect(URI).to have_received(:parse).with(invoice.callback_url)
-    end
-
-    it 'calls Net::HTTP.get' do
-      expect(Net::HTTP).to have_received(:get).with(URI.parse(invoice.callback_url))
+      expect(CallbackService).to have_received(:handle_payment_complete).with(invoice.callback_url).once
     end
   end
 
@@ -318,8 +312,8 @@ RSpec.describe Invoice do
 
     xit 'sends an email about overpayment'
 
-    it 'enqueues a HandlePaymentJob' do
-      expect(HandlePaymentJob).to have_enqueued_sidekiq_job(invoice.id)
+    it 'enqueues a HandlePaymentCompleteJob' do
+      expect(HandlePaymentCompleteJob).to have_enqueued_sidekiq_job(invoice.id)
     end
   end
 
@@ -370,7 +364,7 @@ RSpec.describe Invoice do
       it 'calls handle_partial_payment' do
         gracefully_delete
 
-        expect(invoice).to have_received(:handle_partial_payment)
+        expect(invoice).to have_received(:handle_partial_payment).once
       end
 
       it 'destroys the payments' do
@@ -394,8 +388,6 @@ RSpec.describe Invoice do
 
         expect(invoice).not_to have_received(:handle_partial_payment)
       end
-
-      xit 'deletes the invoice, any associated payments, and attached qr codes'
 
       it 'destroys the payments' do
         expect { gracefully_delete }.to change(Payment, :count).from(3).to(0)

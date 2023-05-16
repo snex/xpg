@@ -76,7 +76,7 @@ RSpec.describe WalletCreator do
       it 'calls wallet.save!' do
         save
 
-        expect(wallet).to have_received(:save!)
+        expect(wallet).to have_received(:save!).once
       end
 
       it 'enqueues a SpawnCreateRpcWalletJob' do

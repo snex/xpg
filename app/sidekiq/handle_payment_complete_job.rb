@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class HandlePaymentJob
+class HandlePaymentCompleteJob
   include Sidekiq::Job
 
   def perform(invoice_id)

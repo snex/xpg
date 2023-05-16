@@ -174,10 +174,20 @@ RSpec.describe Wallet do
     end
 
     context 'when there is an invoice with the incoming payment_id' do
-      before { create(:invoice, wallet: wallet, payment_id: '1234') }
+      before do
+        create(:invoice, wallet: wallet, payment_id: '1234')
+        allow(tx_in).to receive(:confirmations).and_return(nil)
+        allow(tx_in).to receive(:suggested_confirmations_threshold).and_return(2)
+      end
 
       it 'creates a Payment' do
         expect { process_tx }.to change(Payment, :count).by(1)
+      end
+
+      it 'enqueues a HandlePaymentWitnessedJob' do
+        process_tx
+
+        expect(HandlePaymentWitnessedJob).to have_enqueued_sidekiq_job(Payment.first.id)
       end
     end
   end

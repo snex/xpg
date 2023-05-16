@@ -10,6 +10,6 @@ RSpec.describe HandleOverpaymentJob, type: :job do
   end
 
   it 'calls invoice.handle_overpayment' do
-    expect(invoice).to have_received(:handle_overpayment)
+    expect(invoice).to have_received(:handle_overpayment).once
   end
 end

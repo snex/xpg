@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'net/http'
-
 class Invoice < ApplicationRecord
   belongs_to :wallet
 
@@ -49,12 +47,12 @@ class Invoice < ApplicationRecord
   end
 
   def handle_payment_complete
-    Net::HTTP.get(URI.parse(callback_url))
+    CallbackService.handle_payment_complete(callback_url)
   end
 
   def handle_overpayment
     # TODO: send email about overpayment
-    HandlePaymentJob.perform_async(id)
+    HandlePaymentCompleteJob.perform_async(id)
   end
 
   def handle_partial_payment

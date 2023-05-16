@@ -15,8 +15,8 @@ RSpec.describe CheckInvoicePaymentsJob, type: :job do
       expect(HandleOverpaymentJob).not_to have_enqueued_sidekiq_job
     end
 
-    it 'does not enqueue a HandlePaymentJob' do
-      expect(HandlePaymentJob).not_to have_enqueued_sidekiq_job
+    it 'does not enqueue a HandlePaymentCompleteJob' do
+      expect(HandlePaymentCompleteJob).not_to have_enqueued_sidekiq_job
     end
   end
 
@@ -31,8 +31,8 @@ RSpec.describe CheckInvoicePaymentsJob, type: :job do
       expect(HandleOverpaymentJob).to have_enqueued_sidekiq_job(invoice.id)
     end
 
-    it 'does not enqueue a HandlePaymentJob' do
-      expect(HandlePaymentJob).not_to have_enqueued_sidekiq_job
+    it 'does not enqueue a HandlePaymentCompleteJob' do
+      expect(HandlePaymentCompleteJob).not_to have_enqueued_sidekiq_job
     end
   end
 
@@ -48,8 +48,8 @@ RSpec.describe CheckInvoicePaymentsJob, type: :job do
       expect(HandleOverpaymentJob).not_to have_enqueued_sidekiq_job
     end
 
-    it 'enqueues a HandlePaymentJob' do
-      expect(HandlePaymentJob).to have_enqueued_sidekiq_job(invoice.id)
+    it 'enqueues a HandlePaymentCompleteJob' do
+      expect(HandlePaymentCompleteJob).to have_enqueued_sidekiq_job(invoice.id)
     end
   end
 

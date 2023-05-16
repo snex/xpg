@@ -14,7 +14,7 @@ RSpec.describe DeleteInvoiceJob, type: :job do
     end
 
     it 'calls invoice.gracefully_delete' do
-      expect(invoice).to have_received(:gracefully_delete)
+      expect(invoice).to have_received(:gracefully_delete).once
     end
   end
 
