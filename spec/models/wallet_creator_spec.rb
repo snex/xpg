@@ -7,22 +7,26 @@ RSpec.describe WalletCreator do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:view_key) }
+  end
 
-    describe '#validate_wallet' do
-      subject(:valid?) { wc.valid? }
+  describe '#validate_wallet' do
+    subject(:valid?) { wc.valid? }
 
+    let!(:wc) { described_class.new(address: '1234', view_key: '1234', name: 'wallet', port: '12345') }
+
+    context 'when the wallet is valid' do
+      it { is_expected.to be true }
+    end
+
+    context 'when the wallet is invalid' do
       let!(:wc) { described_class.new }
-      let!(:wallet) { build(:wallet) }
 
-      before do
-        allow(wc).to receive(:wallet).and_return(wallet)
-        allow(wallet).to receive(:valid?)
-      end
+      it { is_expected.to be false }
 
-      it 'calls wallet.valid?' do
+      it 'populates errors' do
         valid?
 
-        expect(wallet).to have_received(:valid?).once
+        expect(wc.errors).not_to be_empty
       end
     end
   end

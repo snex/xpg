@@ -2,29 +2,19 @@
   "type": "object",
   "required": [
     "id",
-    "wallet_id",
     "amount",
-    "external_id",
     "expires_at",
-    "created_at",
-    "updated_at",
     "incoming_address",
     "payment_id",
-    "callback_url",
     "qr_code",
     "estimated_confirm_time"
   ],
   "properties": {
     "id":                     { "type": "string", "format": "uuid" },
-    "wallet_id":              { "type": "integer" },
     "amount":                 { "type": "string", "pattern": "^[0-9]+[.][0-9]+ XMR$"  },
-    "external_id":            { "type": "string" },
     "expires_at":             { "type": "string", "format": "date-time" },
-    "created_at":             { "type": "string", "format": "date-time" },
-    "updated_at":             { "type": "string", "format": "date-time" },
     "incoming_address":       { "type": "string" },
     "payment_id":             { "type": "string" },
-    "callback_url":           { "type": "string", "format": "uri" },
     "qr_code":                { "type": "string", "format": "uri" },
     "estimated_confirm_time": { "type": "integer" }
   }

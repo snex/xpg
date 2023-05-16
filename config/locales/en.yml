@@ -30,6 +30,12 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  attributes:
+    callback_url:       'Callback URL'
+    default_expiry_ttl: 'Default Invoice Expiration Time'
+    expires_at:         'Expiration Time'
+    external_id:        'External ID'
+
   helpers:
     label:
       wallet:

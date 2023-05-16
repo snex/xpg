@@ -80,6 +80,7 @@ class Invoice < ApplicationRecord
 
   def assign_expires_at
     return if expires_at?
+    return unless wallet_id?
 
     # Rails has not yet set the wallet object
     wallet ||= Wallet.find(wallet_id)

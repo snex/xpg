@@ -4,7 +4,7 @@ RSpec.describe 'api/v1/invoices' do
   let!(:wallet) { create(:wallet) }
   let(:valid_attributes) do
     {
-      wallet_id:    wallet.id,
+      wallet_name:  wallet.name,
       amount:       1,
       expires_at:   1.hour.from_now,
       external_id:  'ext_id',
@@ -13,8 +13,7 @@ RSpec.describe 'api/v1/invoices' do
   end
   let(:invalid_attributes) do
     {
-      wallet_id: wallet.id,
-      amount:    'lolwut'
+      amount: 'lolwut'
     }
   end
 
