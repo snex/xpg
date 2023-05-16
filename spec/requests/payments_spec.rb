@@ -11,7 +11,7 @@ RSpec.describe '/payments' do
   let(:attributes) { valid_attributes }
 
   describe 'POST /process_transaction' do
-    before { post process_transaction_url(transaction: attributes) }
+    before { post api_v1_process_transaction_url(transaction: attributes) }
 
     context 'when an invalid wallet_id is given' do
       let(:attributes) { valid_attributes.merge(wallet_id: 0) }

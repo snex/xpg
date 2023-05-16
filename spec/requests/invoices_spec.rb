@@ -33,12 +33,12 @@ RSpec.describe '/invoices' do
     context 'with valid parameters' do
       it 'creates a new Invoice' do
         expect do
-          post invoices_url, params: { invoice: valid_attributes }
+          post api_v1_invoices_url, params: { invoice: valid_attributes }
         end.to change(Invoice, :count).by(1)
       end
 
       it 'responds with the created invoice' do
-        post invoices_url, params: { invoice: valid_attributes }
+        post api_v1_invoices_url, params: { invoice: valid_attributes }
         expect(response).to match_response_schema('invoice')
       end
     end
@@ -46,17 +46,17 @@ RSpec.describe '/invoices' do
     context 'with invalid parameters' do
       it 'does not create a new Invoice' do
         expect do
-          post invoices_url, params: { invoice: invalid_attributes }
+          post api_v1_invoices_url, params: { invoice: invalid_attributes }
         end.not_to change(Invoice, :count)
       end
 
       it 'renders a response with 422 status' do
-        post invoices_url, params: { invoice: invalid_attributes }
+        post api_v1_invoices_url, params: { invoice: invalid_attributes }
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it 'renders a response in the correct schema' do
-        post invoices_url, params: { invoice: invalid_attributes }
+        post api_v1_invoices_url, params: { invoice: invalid_attributes }
         expect(response).to match_response_schema('error')
       end
     end

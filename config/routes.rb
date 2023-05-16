@@ -5,8 +5,13 @@ require 'sidekiq/web'
 Rails.application.routes.draw do
   mount Sidekiq::Web => '/sidekiq'
 
-  post 'process_transaction', defaults: { format: :json }, to: 'payments#process_transaction'
-  resources :invoices, only: :create, defaults: { format: :json }
+  namespace :api do
+    namespace :v1 do
+      post 'process_transaction', defaults: { format: :json }, to: 'payments#process_transaction'
+      resources :invoices, only: :create, defaults: { format: :json }
+    end
+  end
+
   resources :wallets, except: :show do
     member do
       get 'status'
