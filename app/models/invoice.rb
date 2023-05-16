@@ -36,6 +36,10 @@ class Invoice < ApplicationRecord
     !paid?
   end
 
+  def paid_unconfirmed?
+    payments.pluck(:amount).map(&:to_i).sum >= amount.to_i && unpaid?
+  end
+
   def overpaid?
     amount_paid > amount.to_i
   end
@@ -59,6 +63,9 @@ class Invoice < ApplicationRecord
   end
 
   def gracefully_delete
+    # do not delete an invoice if it is fully paid but still awaiting confirmations. it will be picked up later
+    return if paid_unconfirmed?
+
     if partially_paid?
       handle_partial_payment
       payments.destroy_all

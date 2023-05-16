@@ -194,6 +194,36 @@ RSpec.describe Invoice do
     end
   end
 
+  describe '#paid_unconfirmed?' do
+    subject { invoice.paid_unconfirmed? }
+
+    let(:invoice) { build(:invoice, amount: 3) }
+
+    context 'when the payments < the invoice amount' do
+      before { create_list(:payment, 2, invoice: invoice, amount: 1) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when the payments => the invoice amount the invoice is considered unpaid' do
+      before do
+        create_list(:payment, 3, invoice: invoice, amount: 1)
+        allow(invoice).to receive(:unpaid?).and_return(true)
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when the payments => the invoice amount and the invoice is considererd paid' do
+      before do
+        create_list(:payment, 3, invoice: invoice, amount: 1)
+        allow(invoice).to receive(:unpaid?).and_return(false)
+      end
+
+      it { is_expected.to be false }
+    end
+  end
+
   describe '#overpaid?' do
     subject { invoice.overpaid? }
 
@@ -313,7 +343,26 @@ RSpec.describe Invoice do
     let(:qr_code) { invoice.qr_code }
     let!(:invoice) { create(:invoice, :with_payments) }
 
-    before { allow(invoice).to receive(:handle_partial_payment) }
+    before do
+      allow(invoice).to receive(:handle_partial_payment)
+      allow(invoice).to receive(:paid_unconfirmed?).and_return(false)
+    end
+
+    context 'when the invoice is paid but payments are unconfirmed' do
+      before { allow(invoice).to receive(:paid_unconfirmed?).and_return(true) }
+
+      it 'does not destroy the payments' do
+        expect { gracefully_delete }.not_to change(Payment, :count)
+      end
+
+      it 'does not remove the qr code' do
+        expect { gracefully_delete }.not_to change(qr_code, :reload)
+      end
+
+      it 'does not destroy the invoice' do
+        expect { gracefully_delete }.not_to change(described_class, :count)
+      end
+    end
 
     context 'when the invoice is partially paid' do
       before { allow(invoice).to receive(:partially_paid?).and_return(true) }
