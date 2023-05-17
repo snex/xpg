@@ -3,7 +3,7 @@
 class WalletCreator
   include ActiveModel::Model
 
-  attr_accessor :address, :view_key, :name, :port
+  attr_accessor :address, :view_key, :name, :port, :default_expiry_ttl
 
   validates :address,  presence: true
   validates :view_key, presence: true
@@ -26,7 +26,7 @@ class WalletCreator
   end
 
   def wallet
-    @wallet ||= Wallet.new(name: name, port: port)
+    @wallet ||= Wallet.new(name: name, port: port, default_expiry_ttl: default_expiry_ttl)
   end
 
   private
