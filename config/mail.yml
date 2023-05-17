@@ -1,0 +1,11 @@
+development:
+  from: <%= ENV['MAIL_FROM'] %>
+  to:   <%= ENV['MAIL_TO'] %>
+
+test:
+  from: 'from@fake.fake'
+  to:   'to@fake.fake'
+
+production:
+  from: <%= ENV['MAIL_FROM'] %>
+  to:   <%= ENV['MAIL_TO'] %>

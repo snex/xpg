@@ -35,8 +35,14 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
+  config.action_mailer.smtp_settings = {
+    openssl_verify_mode: OpenSSL::SSL::VERIFY_NONE
+  }
+
+  config.action_mailer.perform_deliveries = true
+
   # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
 
   config.action_mailer.perform_caching = false
 

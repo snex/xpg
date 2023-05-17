@@ -31,6 +31,14 @@ RSpec.describe Invoice do
       end
     end
 
+    context 'when the invoice does not have a wallet_id' do
+      let(:invoice) { build(:invoice, expires_at: nil, wallet_id: nil) }
+
+      it 'does nothing' do
+        expect { invoice.valid? }.not_to change(invoice, :expires_at)
+      end
+    end
+
     context 'when expires_at comes from the wallet' do
       let(:wallet) { create(:wallet, default_expiry_ttl: 30) }
       let(:invoice) { build(:invoice, wallet: wallet, expires_at: nil) }
@@ -139,40 +147,42 @@ RSpec.describe Invoice do
     end
   end
 
+  describe '#amount_paid' do
+    subject { invoice.amount_paid }
+
+    let!(:confirmed) { create_list(:payment, 2, invoice: invoice) }
+    let!(:unconfirmed) { create_list(:payment, 2, invoice: invoice) }
+
+    before do
+      allow(invoice).to receive(:payments).and_return(confirmed + unconfirmed)
+      confirmed.each { |c| allow(c).to receive(:confirmed?).and_return(true) }
+      unconfirmed.each { |u| allow(u).to receive(:confirmed?).and_return(false) }
+    end
+
+    it { is_expected.to eq(confirmed[0].amount.to_i + confirmed[1].amount.to_i) }
+  end
+
   describe '#paid?' do
     subject { invoice.paid? }
 
     let(:invoice) { build(:invoice, amount: 2) }
-    let!(:payments) { create_list(:payment, 3, invoice: invoice, amount: 1) }
 
-    before { allow(invoice).to receive(:payments).and_return(payments) }
+    before { allow(invoice).to receive(:amount_paid).and_return(amt) }
 
     context 'when the confirmed payments < the invoice amount' do
-      before do
-        allow(payments[0]).to receive(:confirmed?).and_return(true)
-        allow(payments[1]).to receive(:confirmed?).and_return(false)
-        allow(payments[2]).to receive(:confirmed?).and_return(false)
-      end
+      let(:amt) { 1 }
 
       it { is_expected.to be false }
     end
 
     context 'when the confirmed payments = the invoice amount' do
-      before do
-        allow(payments[0]).to receive(:confirmed?).and_return(true)
-        allow(payments[1]).to receive(:confirmed?).and_return(true)
-        allow(payments[2]).to receive(:confirmed?).and_return(false)
-      end
+      let(:amt) { 2 }
 
       it { is_expected.to be true }
     end
 
     context 'when the confirmed payments > the invoice amount' do
-      before do
-        allow(payments[0]).to receive(:confirmed?).and_return(true)
-        allow(payments[1]).to receive(:confirmed?).and_return(true)
-        allow(payments[2]).to receive(:confirmed?).and_return(true)
-      end
+      let(:amt) { 3 }
 
       it { is_expected.to be true }
     end
@@ -228,36 +238,23 @@ RSpec.describe Invoice do
     subject { invoice.overpaid? }
 
     let(:invoice) { build(:invoice, amount: 2) }
-    let!(:payments) { create_list(:payment, 3, invoice: invoice, amount: 1) }
 
-    before { allow(invoice).to receive(:payments).and_return(payments) }
+    before { allow(invoice).to receive(:amount_paid).and_return(amt) }
 
     context 'when the confirmed payments < the invoice amount' do
-      before do
-        allow(payments[0]).to receive(:confirmed?).and_return(true)
-        allow(payments[1]).to receive(:confirmed?).and_return(false)
-        allow(payments[2]).to receive(:confirmed?).and_return(false)
-      end
+      let(:amt) { 1 }
 
       it { is_expected.to be false }
     end
 
     context 'when the confirmed payments = the invoice amount' do
-      before do
-        allow(payments[0]).to receive(:confirmed?).and_return(true)
-        allow(payments[1]).to receive(:confirmed?).and_return(true)
-        allow(payments[2]).to receive(:confirmed?).and_return(false)
-      end
+      let(:amt) { 2 }
 
       it { is_expected.to be false }
     end
 
     context 'when the confirmed payments > the invoice amount' do
-      before do
-        allow(payments[0]).to receive(:confirmed?).and_return(true)
-        allow(payments[1]).to receive(:confirmed?).and_return(true)
-        allow(payments[2]).to receive(:confirmed?).and_return(true)
-      end
+      let(:amt) { 3 }
 
       it { is_expected.to be true }
     end
@@ -308,11 +305,25 @@ RSpec.describe Invoice do
 
     let(:invoice) { create(:invoice) }
 
-    before { handle_overpayment }
+    context 'when mail is disabled' do
+      before { allow(MailConfig).to receive(:enabled?).and_return(false) }
 
-    xit 'sends an email about overpayment'
+      it 'does not send an email' do
+        expect { handle_overpayment }.not_to change(InvoiceMailer.deliveries, :count)
+      end
+    end
+
+    context 'when mail is enabled' do
+      before { allow(MailConfig).to receive(:enabled?).and_return(true) }
+
+      it 'sends an email about overpayment' do
+        expect { handle_overpayment }.to change(InvoiceMailer.deliveries, :count).from(0).to(1)
+      end
+    end
 
     it 'enqueues a HandlePaymentCompleteJob' do
+      handle_overpayment
+
       expect(HandlePaymentCompleteJob).to have_enqueued_sidekiq_job(invoice.id)
     end
   end
@@ -322,11 +333,25 @@ RSpec.describe Invoice do
 
     let(:invoice) { create(:invoice) }
 
-    before { handle_partial_payment }
+    context 'when mail is disabled' do
+      before { allow(MailConfig).to receive(:enabled?).and_return(false) }
 
-    xit 'send an email about partial payment on an invoice queued for deletion'
+      it 'sends an email about partial payment' do
+        expect { handle_partial_payment }.not_to change(InvoiceMailer.deliveries, :count)
+      end
+    end
+
+    context 'when mail is enabled' do
+      before { allow(MailConfig).to receive(:enabled?).and_return(true) }
+
+      it 'sends an email about partial payment' do
+        expect { handle_partial_payment }.to change(InvoiceMailer.deliveries, :count).from(0).to(1)
+      end
+    end
 
     it 'enqueues a DeleteInvoiceJob' do
+      handle_partial_payment
+
       expect(DeleteInvoiceJob).to have_enqueued_sidekiq_job(invoice.id)
     end
   end

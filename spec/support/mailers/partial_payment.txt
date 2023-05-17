@@ -1,0 +1,10 @@
+An invoice that has been partially paid is about to expire and be deleted
+========================================================================================================================
+
+Incoming Address: 1234
+Payment ID:       5678
+External ID:      lolwut
+Amount Owed:      0.000000000010 XMR
+Amount Paid:      0.000000000020 XMR
+
+

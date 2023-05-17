@@ -26,6 +26,10 @@ class Invoice < ApplicationRecord
     monero_rpc_service.estimated_confirm_time(amount.to_i)
   end
 
+  def amount_paid
+    @amount_paid ||= payments.select(&:confirmed?).pluck(:amount).map(&:to_i).sum
+  end
+
   def paid?
     amount_paid >= amount.to_i
   end
@@ -51,12 +55,12 @@ class Invoice < ApplicationRecord
   end
 
   def handle_overpayment
-    # TODO: send email about overpayment
+    InvoiceMailer.with(invoice: self).overpayment.deliver_now if MailConfig.enabled?
     HandlePaymentCompleteJob.perform_async(id)
   end
 
   def handle_partial_payment
-    # TODO: send email about partial payment prior to delete
+    InvoiceMailer.with(invoice: self).partial_payment.deliver_now if MailConfig.enabled?
     DeleteInvoiceJob.perform_async(id)
   end
 
@@ -107,9 +111,5 @@ class Invoice < ApplicationRecord
       io:       StringIO.new(RQRCode::QRCode.new(payment_uri).as_svg),
       filename: "#{incoming_address}.svg"
     )
-  end
-
-  def amount_paid
-    @amount_paid ||= payments.select(&:confirmed?).pluck(:amount).map(&:to_i).sum
   end
 end

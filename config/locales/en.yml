@@ -47,6 +47,21 @@ en:
     minutes: 'minutes'
     n_a:     'N/A'
 
+  invoice:
+    mailer:
+      common:
+        incoming_address: 'Incoming Address'
+        payment_id:       'Payment ID'
+        external_id:      'External ID'
+        amount_owed:      'Amount Owed'
+        amount_paid:      'Amount Paid'
+      overpayment:
+        subject: 'Overpayment Received'
+        header:  'An invoice received an overpayment'
+      partial_payment:
+        subject: 'Invoice Expiring While Partially Paid'
+        header: 'An invoice that has been partially paid is about to expire and be deleted'
+
   wallet:
     name_format_error: 'must start with a letter and contain only letters, numbers, hyphens (-) and underscores (_)'
 
