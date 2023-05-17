@@ -1,0 +1,5 @@
+<%= t('invoice.mailer.common.incoming_address') %>: <%= @invoice.incoming_address %>
+<%= t('invoice.mailer.common.payment_id') %>:       <%= @invoice.payment_id %>
+<%= t('invoice.mailer.common.external_id') %>:      <%= @invoice.external_id %>
+<%= t('invoice.mailer.common.amount_owed') %>:      <%= XMR.new(@invoice.amount) %>
+<%= t('invoice.mailer.common.amount_paid') %>:      <%= XMR.new(@invoice.amount_paid) %>

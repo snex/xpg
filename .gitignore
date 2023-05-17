@@ -31,3 +31,6 @@ monero-wallet-rpc.log
 
 # coverage
 /coverage/*
+
+# ignore local .env
+.env.local

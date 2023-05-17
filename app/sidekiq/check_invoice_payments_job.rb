@@ -10,11 +10,8 @@ class CheckInvoicePaymentsJob
 
     if invoice.overpaid?
       HandleOverpaymentJob.perform_async(invoice.id)
-    elsif invoice.paid?
-      HandlePaymentCompleteJob.perform_async(invoice.id)
     else
-      # TODO: replace exception with email
-      raise 'wtf'
+      HandlePaymentCompleteJob.perform_async(invoice.id)
     end
   end
 end
