@@ -41,16 +41,13 @@ Rails.application.configure do
     enable_start_tls_auto: true,
     user_name:             ENV.fetch('SMTP_USER', nil),
     password:              ENV.fetch('SMTP_PASS', nil),
-    authentication:        'plain',
+    authentication:        ENV.fetch('SMTP_AUTH', 'plain'),
     domain:                ENV.fetch('SMTP_DOMAIN', nil),
     openssl_verify_mode:   OpenSSL::SSL::VERIFY_NONE
   }
 
   config.action_mailer.perform_deliveries = true
-
-  # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = true
-
   config.action_mailer.perform_caching = false
 
   # Print deprecation notices to the Rails logger.
@@ -68,19 +65,20 @@ Rails.application.configure do
   # Highlight code that triggered database queries in logs.
   config.active_record.verbose_query_logs = true
 
+  config.active_record.encryption.primary_key = 'fake'
+  config.active_record.encryption.deterministic_key = 'fake'
+  config.active_record.encryption.key_derivation_salt = 'fake'
+
   # Suppress logger output for asset requests.
   config.assets.quiet = true
 
   # Raises error for missing translations.
-  # config.i18n.raise_on_missing_translations = true
+  config.i18n.raise_on_missing_translations = true
 
   # Annotate rendered view with file names.
-  # config.action_view.annotate_rendered_view_with_filenames = true
+  config.action_view.annotate_rendered_view_with_filenames = true
 
-  # Uncomment if you wish to allow Action Cable access from any origin.
-  # config.action_cable.disable_request_forgery_protection = true
-
-  Rails.application.routes.default_url_options[:host] = 'localhost:5000'
+  Rails.application.routes.default_url_options[:host] = 'localhost:3000'
   config.active_storage.service = :local
 
   config.monero_daemon_port = ENV['MONERO_DAEMON_PORT'] || '38081'

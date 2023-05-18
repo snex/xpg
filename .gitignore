@@ -34,3 +34,6 @@ monero-wallet-rpc.log
 
 # ignore local .env
 .env.local
+
+# ignore docker .env
+.env.docker
