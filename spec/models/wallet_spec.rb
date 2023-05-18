@@ -158,7 +158,16 @@ RSpec.describe Wallet do
     end
 
     context 'when there is no invoice expecting a transaction' do
-      before { allow(wallet).to receive(:invoices).and_return(Invoice.none) }
+      before do
+        allow(wallet).to receive(:invoices).and_return(Invoice.none)
+        allow(wallet).to receive(:handle_invoiceless_payment)
+      end
+
+      it 'calls handle_invoiceless_payment' do
+        process_tx
+
+        expect(wallet).to have_received(:handle_invoiceless_payment).with(tx_in).once
+      end
 
       it 'does not create a Payment' do
         expect { process_tx }.not_to change(Payment, :count)
@@ -166,7 +175,16 @@ RSpec.describe Wallet do
     end
 
     context 'when there is no invoice with the incoming payment_id' do
-      before { create(:invoice, wallet: wallet, payment_id: '4321') }
+      before do
+        create(:invoice, wallet: wallet, payment_id: '4321')
+        allow(wallet).to receive(:handle_invoiceless_payment)
+      end
+
+      it 'calls handle_invoiceless_payment' do
+        process_tx
+
+        expect(wallet).to have_received(:handle_invoiceless_payment).with(tx_in).once
+      end
 
       it 'does not create a Payment' do
         expect { process_tx }.not_to change(Payment, :count)
@@ -188,6 +206,37 @@ RSpec.describe Wallet do
         process_tx
 
         expect(HandlePaymentWitnessedJob).to have_enqueued_sidekiq_job(Payment.first.id)
+      end
+    end
+  end
+
+  describe '#handle_invoiceless_payment' do
+    subject(:handle_invoiceless_payment) { wallet.handle_invoiceless_payment(tx_in) }
+
+    let(:rpc) { instance_double(MoneroRpcService) }
+    let(:tx_in) { instance_double(MoneroRPC::IncomingTransfer) }
+
+    before do
+      allow(MoneroRpcService).to receive(:new).with(wallet).and_return(rpc)
+      allow(rpc).to receive(:transfer_details).and_return(tx_in)
+      allow(tx_in).to receive(:address).and_return('1234')
+      allow(tx_in).to receive(:payment_id).and_return('5678')
+      allow(tx_in).to receive(:amount).and_return(1)
+    end
+
+    context 'when mail is disabled' do
+      before { allow(MailConfig).to receive(:enabled?).and_return(false) }
+
+      it 'does not send an email' do
+        expect { handle_invoiceless_payment }.not_to change(WalletMailer.deliveries, :count)
+      end
+    end
+
+    context 'when mail is enabled' do
+      before { allow(MailConfig).to receive(:enabled?).and_return(true) }
+
+      it 'sends an email' do
+        expect { handle_invoiceless_payment }.to change(WalletMailer.deliveries, :count).from(0).to(1)
       end
     end
   end

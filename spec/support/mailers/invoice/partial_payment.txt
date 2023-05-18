@@ -1,6 +1,7 @@
 An invoice that has been partially paid is about to expire and be deleted
 ========================================================================================================================
 
+Wallet:           lolwallet
 Incoming Address: 1234
 Payment ID:       5678
 External ID:      lolwut
