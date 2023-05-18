@@ -38,6 +38,10 @@ class MoneroRpcService
     @rpc.stop_wallet
   end
 
+  def save_wallet
+    @rpc.save_wallet
+  end
+
   def generate_incoming_address
     @rpc.make_integrated_address
   end

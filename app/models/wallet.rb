@@ -24,6 +24,10 @@ class Wallet < ApplicationRecord
     update(ready_to_run: true)
   end
 
+  def save_wallet_file!
+    monero_rpc_service.save_wallet
+  end
+
   def transfer_details(monero_tx_id)
     monero_rpc_service&.transfer_details(monero_tx_id)
   end

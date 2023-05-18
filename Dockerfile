@@ -21,4 +21,5 @@ COPY . .
 
 EXPOSE 3000
 
-CMD bin/rails db:create && bin/rails db:migrate && foreman start
+ENTRYPOINT ["lib/entrypoint.sh"]
+CMD ["foreman", "start"]

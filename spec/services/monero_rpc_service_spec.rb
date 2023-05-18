@@ -89,6 +89,18 @@ RSpec.describe MoneroRpcService do
     end
   end
 
+  describe '#save_wallet' do
+    subject(:save_wallet) { rpc_service.save_wallet }
+
+    before { allow(rpc).to receive(:save_wallet) }
+
+    it 'calls save_wallet' do
+      save_wallet
+
+      expect(rpc).to have_received(:save_wallet).once
+    end
+  end
+
   describe '#generate_incoming_address' do
     subject(:generate_incoming_address) { rpc_service.generate_incoming_address }
 

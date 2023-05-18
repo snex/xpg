@@ -3,6 +3,9 @@
     spawn_monero_rpc_wallets_job:
       every: ['1m', first_in: '0s']
       class: SpawnMoneroRpcWalletsJob
+    save_wallets:
+      every: ['1m', first_in: '5m15s']
+      class: SaveWalletsJob
     sweep_expired_invoices_job:
-      every: ['1m', first_in: '5m']
+      every: ['1m', first_in: '5m30s']
       class: SweepExpiredInvoicesJob

@@ -96,6 +96,23 @@ RSpec.describe Wallet do
     end
   end
 
+  describe '#save_wallet_file!' do
+    subject(:save_wallet_file!) { wallet.save_wallet_file! }
+
+    let(:rpc) { instance_double(MoneroRpcService) }
+
+    before do
+      allow(MoneroRpcService).to receive(:new).with(wallet).and_return(rpc)
+      allow(rpc).to receive(:save_wallet)
+    end
+
+    it 'calls monero_rpc_service.save_wallet' do
+      save_wallet_file!
+
+      expect(rpc).to have_received(:save_wallet).once
+    end
+  end
+
   describe '#transfer_details' do
     subject(:transfer_details) { wallet.transfer_details('1234') }
 
@@ -213,6 +230,7 @@ RSpec.describe Wallet do
   describe '#handle_invoiceless_payment' do
     subject(:handle_invoiceless_payment) { wallet.handle_invoiceless_payment(tx_in) }
 
+    let(:wallet) { create(:wallet) }
     let(:rpc) { instance_double(MoneroRpcService) }
     let(:tx_in) { instance_double(MoneroRPC::IncomingTransfer) }
 

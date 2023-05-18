@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class WalletMailer < ApplicationMailer
-  before_action { @wallet = params[:wallet] }
-
   def payment_without_invoice
     @wallet = params[:wallet]
     @transaction = params[:transaction]
