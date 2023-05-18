@@ -52,6 +52,7 @@ class Invoice < ApplicationRecord
 
   def handle_payment_complete
     CallbackService.handle_payment_complete(callback_url)
+    gracefully_delete(skip_delete_paid: false)
   end
 
   def handle_overpayment
@@ -64,9 +65,13 @@ class Invoice < ApplicationRecord
     DeleteInvoiceJob.perform_async(id)
   end
 
-  def gracefully_delete
+  def gracefully_delete(skip_delete_paid: true)
     # do not delete an invoice if it is fully paid but still awaiting confirmations. it will be picked up later
     return if paid_unconfirmed?
+
+    # do not delete an invoice if it was fully paid via the sidekiq job.
+    # it will be deleted after running the CallbackService
+    return if paid? && skip_delete_paid
 
     if partially_paid?
       handle_partial_payment

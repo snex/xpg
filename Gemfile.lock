@@ -1,5 +1,7 @@
-PATH
-  remote: /home/snex/github/ruby/monero
+GIT
+  remote: https://github.com/snex/monero.git
+  revision: 04921207f9ed5cb826b64f3945071c633b94611c
+  branch: update_monero
   specs:
     monero (0.0.16)
       money
@@ -118,7 +120,7 @@ GEM
       raabro (~> 1.4)
     globalid (1.1.0)
       activesupport (>= 5.0)
-    i18n (1.12.0)
+    i18n (1.13.0)
       concurrent-ruby (~> 1.0)
     importmap-rails (1.1.6)
       actionpack (>= 6.0.0)

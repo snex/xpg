@@ -1,2 +1,2 @@
-web:     bundle exec bin/rails s -p 5000
+web:     bundle exec puma -C config/puma.rb
 sidekiq: bundle exec sidekiq -q default

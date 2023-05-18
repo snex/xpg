@@ -85,6 +85,16 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
+  config.action_mailer.smtp_settings = {
+    address:               ENV.fetch('SMTP_HOST', nil),
+    port:                  ENV['SMTP_PORT'].to_i,
+    enable_start_tls_auto: true,
+    user_name:             ENV.fetch('SMTP_USER', nil),
+    password:              ENV.fetch('SMTP_PASS', nil),
+    authentication:        'plain',
+    domain:                ENV.fetch('SMTP_DOMAIN', nil)
+  }
+
   Rails.application.routes.default_url_options[:host] = 'localhost:5000'
   config.active_storage.service = :local
 
