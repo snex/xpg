@@ -21,8 +21,8 @@ services:
   web:
     build: .
     volumes:
-      - .:/opt
-      - wallets:/opt/wallets
+      - .:/app
+      - wallets:/app/wallets
     ports:
       - "3000:3000"
     depends_on:
@@ -30,6 +30,8 @@ services:
       - redis
     env_file:
       - '.env.docker'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
 
 volumes:
   redis:

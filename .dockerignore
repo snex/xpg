@@ -1,6 +1,5 @@
 .bundle
 .git
-.env.local
 .dockerignore
 .byebug_history
 monero-wallet-rpc.log

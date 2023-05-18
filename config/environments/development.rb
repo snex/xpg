@@ -36,7 +36,14 @@ Rails.application.configure do
   end
 
   config.action_mailer.smtp_settings = {
-    openssl_verify_mode: OpenSSL::SSL::VERIFY_NONE
+    address:               ENV['SMTP_HOST'],
+    port:                  ENV['SMTP_PORT'].to_i,
+    enable_start_tls_auto: true,
+    user_name:             ENV['SMTP_USER'],
+    password:              ENV['SMTP_PASS'],
+    authentication:        'plain',
+    domain:                ENV['SMTP_DOMAIN'],
+    openssl_verify_mode:   OpenSSL::SSL::VERIFY_NONE
   }
 
   config.action_mailer.perform_deliveries = true
