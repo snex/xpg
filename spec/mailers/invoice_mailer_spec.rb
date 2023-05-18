@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe InvoiceMailer do
+  let(:wallet) { build(:wallet, name: 'lolwallet') }
+  let(:invoice) do
+    build(:invoice, wallet: wallet, incoming_address: '1234', payment_id: '5678', external_id: 'lolwut', amount: 10)
+  end
+
   describe '#overpayment' do
-    let(:invoice) { build(:invoice, incoming_address: '1234', payment_id: '5678', external_id: 'lolwut', amount: 10) }
     let(:mail) { described_class.with(invoice: invoice).overpayment }
-    let(:expected_body) { File.readlines('spec/support/mailers/overpayment.txt').join }
+    let(:expected_body) { File.readlines('spec/support/mailers/invoice/overpayment.txt').join }
 
     before { allow(invoice).to receive(:amount_paid).and_return(20) }
 
@@ -26,9 +30,8 @@ RSpec.describe InvoiceMailer do
   end
 
   describe '#partial_payment' do
-    let(:invoice) { build(:invoice, incoming_address: '1234', payment_id: '5678', external_id: 'lolwut', amount: 10) }
     let(:mail) { described_class.with(invoice: invoice).partial_payment }
-    let(:expected_body) { File.readlines('spec/support/mailers/partial_payment.txt').join }
+    let(:expected_body) { File.readlines('spec/support/mailers/invoice/partial_payment.txt').join }
 
     before { allow(invoice).to receive(:amount_paid).and_return(20) }
 

@@ -1,10 +1,8 @@
-An invoice received an overpayment
+A payment has arrived but no invoice was able to be associated with it
 ========================================================================================================================
 
+Wallet:           lolwallet
 Incoming Address: 1234
 Payment ID:       5678
-External ID:      lolwut
-Amount Owed:      0.000000000010 XMR
-Amount Paid:      0.000000000020 XMR
-
+Amount Received:  0.000000000010 XMR
 

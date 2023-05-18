@@ -35,11 +35,18 @@ class Wallet < ApplicationRecord
     tx_details = transfer_details(monero_tx_id)
     invoice = invoices.find_by(payment_id: tx_details.payment_id)
 
-    return if invoice.blank?
+    if invoice.blank?
+      handle_invoiceless_payment(tx_details)
+      return
+    end
 
     # TODO: do something with unlock time?
     payment = Payment.create!(invoice: invoice, amount: tx_details.amount, monero_tx_id: monero_tx_id)
     CheckPaymentConfirmationsJob.perform_async(payment.id)
+  end
+
+  def handle_invoiceless_payment(tx_details)
+    WalletMailer.with(wallet: self, transaction: tx_details).payment_without_invoice.deliver_now if MailConfig.enabled?
   end
 
   def status

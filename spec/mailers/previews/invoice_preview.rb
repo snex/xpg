@@ -2,10 +2,10 @@
 
 class InvoicePreview < ActionMailer::Preview
   def overpayment
-    InvoiceMailer.with(invoice: Invoice.last).overpayment
+    InvoiceMailer.with(invoice: FactoryBot.build(:invoice)).overpayment
   end
 
   def partial_payment
-    InvoiceMailer.with(invoice: Invoice.last).partial_payment
+    InvoiceMailer.with(invoice: FactoryBot.build(:invoice)).partial_payment
   end
 end

@@ -1,0 +1,7 @@
+<%= t('wallet.mailer.payment_without_invoice.header') %>
+<%= '=' * 120 %>
+
+<%= t('mailer.common.wallet') %>:           <%= @wallet.name %>
+<%= t('mailer.common.incoming_address') %>: <%= @transaction.address %>
+<%= t('mailer.common.payment_id') %>:       <%= @transaction.payment_id %>
+<%= t('wallet.mailer.payment_without_invoice.amount') %>:  <%= XMR.new(@transaction.amount) %>

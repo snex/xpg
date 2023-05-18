@@ -43,6 +43,12 @@ en:
         port:               'Port'
         status:             'Status'
 
+  mailer:
+    common:
+      incoming_address: 'Incoming Address'
+      payment_id:       'Payment ID'
+      wallet:           'Wallet'
+
   misc:
     minutes: 'minutes'
     n_a:     'N/A'
@@ -50,11 +56,9 @@ en:
   invoice:
     mailer:
       common:
-        incoming_address: 'Incoming Address'
-        payment_id:       'Payment ID'
-        external_id:      'External ID'
-        amount_owed:      'Amount Owed'
-        amount_paid:      'Amount Paid'
+        external_id: 'External ID'
+        amount_owed: 'Amount Owed'
+        amount_paid: 'Amount Paid'
       overpayment:
         subject: 'Overpayment Received'
         header:  'An invoice received an overpayment'
@@ -87,3 +91,9 @@ en:
       building: 'orange'
       running:  'green'
       error:    'red'
+
+    mailer:
+      payment_without_invoice:
+        subject: 'Payment With No Invoice Received'
+        header:  'A payment has arrived but no invoice was able to be associated with it'
+        amount:  'Amount Received'
