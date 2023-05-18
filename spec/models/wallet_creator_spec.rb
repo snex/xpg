@@ -12,7 +12,9 @@ RSpec.describe WalletCreator do
   describe '#validate_wallet' do
     subject(:valid?) { wc.valid? }
 
-    let!(:wc) { described_class.new(address: '1234', view_key: '1234', name: 'wallet', port: '12345', default_expiry_ttl: 1) }
+    let!(:wc) do
+      described_class.new(address: '1234', view_key: '1234', name: 'wallet', port: '12345', default_expiry_ttl: 1)
+    end
 
     context 'when the wallet is valid' do
       it { is_expected.to be true }

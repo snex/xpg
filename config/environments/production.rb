@@ -86,13 +86,13 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   config.action_mailer.smtp_settings = {
-    address:               ENV['SMTP_HOST'],
+    address:               ENV.fetch('SMTP_HOST', nil),
     port:                  ENV['SMTP_PORT'].to_i,
     enable_start_tls_auto: true,
-    user_name:             ENV['SMTP_USER'],
-    password:              ENV['SMTP_PASS'],
+    user_name:             ENV.fetch('SMTP_USER', nil),
+    password:              ENV.fetch('SMTP_PASS', nil),
     authentication:        'plain',
-    domain:                ENV['SMTP_DOMAIN']
+    domain:                ENV.fetch('SMTP_DOMAIN', nil)
   }
 
   Rails.application.routes.default_url_options[:host] = 'localhost:5000'

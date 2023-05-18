@@ -383,8 +383,51 @@ RSpec.describe Invoice do
       end
     end
 
+    context 'when the invoice is paid and the skip_delete_paid override is true' do
+      before do
+        allow(invoice).to receive(:paid_unconfirmed?).and_return(false)
+        allow(invoice).to receive(:paid?).and_return(true)
+      end
+
+      it 'does not destroy the payments' do
+        expect { gracefully_delete }.not_to change(Payment, :count)
+      end
+
+      it 'does not remove the qr code' do
+        expect { gracefully_delete }.not_to change(qr_code, :reload)
+      end
+
+      it 'does not destroy the invoice' do
+        expect { gracefully_delete }.not_to change(described_class, :count)
+      end
+    end
+
+    context 'when the invoice is paid and the skip_delete_paid override is false' do
+      subject(:gracefully_delete) { invoice.gracefully_delete(skip_delete_paid: false) }
+
+      before do
+        allow(invoice).to receive(:paid_unconfirmed?).and_return(false)
+        allow(invoice).to receive(:paid?).and_return(true)
+      end
+
+      it 'destroys the payments' do
+        expect { gracefully_delete }.to change(Payment, :count).from(3).to(0)
+      end
+
+      it 'removes the qr code' do
+        expect { gracefully_delete }.to change(qr_code, :reload).to(nil)
+      end
+
+      it 'destroys the invoice' do
+        expect { gracefully_delete }.to change(described_class, :count).from(1).to(0)
+      end
+    end
+
     context 'when the invoice is partially paid' do
-      before { allow(invoice).to receive(:partially_paid?).and_return(true) }
+      before do
+        allow(invoice).to receive(:partially_paid?).and_return(true)
+        allow(invoice).to receive(:paid?).and_return(false)
+      end
 
       it 'calls handle_partial_payment' do
         gracefully_delete
@@ -406,7 +449,10 @@ RSpec.describe Invoice do
     end
 
     context 'when the invoice is not partially paid' do
-      before { allow(invoice).to receive(:partially_paid?).and_return(false) }
+      before do
+        allow(invoice).to receive(:partially_paid?).and_return(false)
+        allow(invoice).to receive(:paid?).and_return(false)
+      end
 
       it 'does not call handle_partial_payment' do
         gracefully_delete
