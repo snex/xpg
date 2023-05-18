@@ -94,6 +94,7 @@ en:
 
     mailer:
       payment_without_invoice:
-        subject: 'Payment With No Invoice Received'
-        header:  'A payment has arrived but no invoice was able to be associated with it'
-        amount:  'Amount Received'
+        subject:      'Payment With No Invoice Received'
+        header:       'A payment has arrived but no invoice was able to be associated with it'
+        amount:       'Amount Received'
+        monero_tx_id: 'Monero TX ID'

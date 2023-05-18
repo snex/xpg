@@ -5,4 +5,5 @@ Wallet:           lolwallet
 Incoming Address: 1234
 Payment ID:       5678
 Amount Received:  0.000000000010 XMR
+Monero TX ID:     lol
 

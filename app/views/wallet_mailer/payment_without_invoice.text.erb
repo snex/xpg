@@ -5,3 +5,4 @@
 <%= t('mailer.common.incoming_address') %>: <%= @transaction.address %>
 <%= t('mailer.common.payment_id') %>:       <%= @transaction.payment_id %>
 <%= t('wallet.mailer.payment_without_invoice.amount') %>:  <%= XMR.new(@transaction.amount) %>
+<%= t('wallet.mailer.payment_without_invoice.monero_tx_id') %>:     <%= @transaction.txid %>

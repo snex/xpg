@@ -222,6 +222,7 @@ RSpec.describe Wallet do
       allow(tx_in).to receive(:address).and_return('1234')
       allow(tx_in).to receive(:payment_id).and_return('5678')
       allow(tx_in).to receive(:amount).and_return(1)
+      allow(tx_in).to receive(:txid).and_return('lol')
     end
 
     context 'when mail is disabled' do

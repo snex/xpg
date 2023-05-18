@@ -12,6 +12,7 @@ RSpec.describe WalletMailer do
       allow(tx).to receive(:address).and_return('1234')
       allow(tx).to receive(:payment_id).and_return('5678')
       allow(tx).to receive(:amount).and_return(10)
+      allow(tx).to receive(:txid).and_return('lol')
     end
 
     it 'renders the sender' do
