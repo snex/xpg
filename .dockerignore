@@ -3,6 +3,7 @@
 .git
 .dockerignore
 .byebug_history
+README.md
 monero-wallet-rpc.log
 coverage/*
 log/*
