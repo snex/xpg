@@ -1,3 +1,4 @@
+*.md
 .byebug_history
 .bundle
 .docker-compose.yml.production
@@ -9,7 +10,6 @@
 .rspec
 .rubocop.yml
 .ruby-version
-README.md
 monero-wallet-rpc.log
 coverage
 log/*
