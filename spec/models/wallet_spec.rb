@@ -106,10 +106,24 @@ RSpec.describe Wallet do
       allow(rpc).to receive(:save_wallet)
     end
 
-    it 'calls monero_rpc_service.save_wallet' do
-      save_wallet_file!
+    context 'when the wallet is not running' do
+      before { allow(wallet).to receive(:running?).and_return(false) }
 
-      expect(rpc).to have_received(:save_wallet).once
+      it 'does not call monero_rpc_service.save_wallet' do
+        save_wallet_file!
+
+        expect(rpc).not_to have_received(:save_wallet)
+      end
+    end
+
+    context 'when the wallet is running' do
+      before { allow(wallet).to receive(:running?).and_return(true) }
+
+      it 'calls monero_rpc_service.save_wallet' do
+        save_wallet_file!
+
+        expect(rpc).to have_received(:save_wallet).once
+      end
     end
   end
 

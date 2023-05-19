@@ -22,7 +22,7 @@ module WalletFileService
       '%daemon%'    => Rails.application.config.monero_daemon,
       '%rpc_creds%' => @wallet.rpc_creds,
       '%port%'      => @wallet.port.to_s,
-      '%name%'      => "#{Rails.env}/#{@wallet.name}",
+      '%name%'      => @wallet.name,
       '%password%'  => @wallet.password,
       '%id%'        => @wallet.id.to_s,
       '%tx_notify%' => Rails.root.join('lib/process_tx.sh')

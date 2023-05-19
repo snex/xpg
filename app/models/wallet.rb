@@ -25,6 +25,8 @@ class Wallet < ApplicationRecord
   end
 
   def save_wallet_file!
+    return unless running?
+
     monero_rpc_service.save_wallet
   end
 

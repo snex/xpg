@@ -21,7 +21,7 @@ RSpec.describe WalletFileService do
       [
         "rpc-creds=#{wallet.rpc_creds}\n",
         "port=#{wallet.port}\n",
-        "name=test/#{wallet.name}\n",
+        "name=#{wallet.name}\n",
         "password=#{wallet.password}\n",
         "id=#{wallet.id}\n",
         "tx-notify=#{Rails.root.join('lib/process_tx.sh')}\n"
