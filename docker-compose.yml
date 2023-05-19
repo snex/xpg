@@ -16,8 +16,6 @@ services:
 
   web:
     image: snex00/xpg:latest
-    environment:
-      RAILS_ENV: staging
     volumes:
       - wallets:/app/wallets
       - qr_codes:/app/storage
