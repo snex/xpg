@@ -37,5 +37,8 @@ Style/HashSyntax:
 AllCops:
   NewCops: enable
   Exclude:
-    - 'bin/**'
-    - 'db/**'
+    - '.git/**/*'
+    - 'bin/**/*'
+    - 'db/**/*'
+    - 'tmp/**/*'
+    - 'vendor/**/*'
