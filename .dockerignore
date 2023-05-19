@@ -10,6 +10,7 @@
 .gitignore
 .rspec
 .rubocop.yml
+.ruby-gemset
 .ruby-version
 monero-wallet-rpc.log
 coverage
