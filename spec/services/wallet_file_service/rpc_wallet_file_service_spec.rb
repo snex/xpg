@@ -22,7 +22,7 @@ RSpec.describe WalletFileService::RpcWalletFileService do
       spawn_wallet_proc!
 
       expect(Process)
-        .to have_received(:spawn).with("monero-wallet-rpc --config-file=wallets/#{wallet.name}.config").once
+        .to have_received(:spawn).with("monero-wallet-rpc --config-file=wallets/test/#{wallet.name}.config").once
     end
 
     it 'sets the wallet pid' do

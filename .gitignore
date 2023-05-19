@@ -26,7 +26,24 @@
 /config/master.key
 
 # xmr wallet files
-/wallets/**
+/wallets/*
+!/wallets/development/
+!/wallets/test/
+!/wallets/staging/
+!/wallets/production/
+
+/wallets/development/*
+!/wallets/development/.keep
+
+/wallets/test/*
+!/wallets/test/.keep
+
+/wallets/staging/*
+!/wallets/staging/.keep
+
+/wallets/production/*
+!/wallets/production/.keep
+
 monero-wallet-rpc.log
 
 # coverage

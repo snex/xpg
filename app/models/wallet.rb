@@ -63,7 +63,7 @@ class Wallet < ApplicationRecord
   def running?
     return false if pid.blank?
 
-    File.read("/proc/#{pid}/cmdline").match?(%r{monero-wallet-rpc.*--config-file=wallets/#{name}.config})
+    File.read("/proc/#{pid}/cmdline").match?(%r{monero-wallet-rpc.*--config-file=wallets/#{Rails.env}/#{name}.config})
   rescue Errno::ENOENT
     update(pid: nil)
     false

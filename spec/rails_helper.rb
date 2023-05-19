@@ -13,7 +13,8 @@ end
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
-# Prevent database truncation if the environment is production
+# Prevent database truncation if the environment is staging or production
+abort('The Rails environment is running in staging mode!') if Rails.env.staging?
 abort('The Rails environment is running in production mode!') if Rails.env.production?
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!

@@ -11,6 +11,11 @@
 
   <body>
     <div class="container">
+      <% unless Rails.env.production? %>
+        <div class="alert alert-danger">
+          <h2><%= t('layout.non_prod_warning', env: Rails.env) %></h2>
+        </div>
+      <% end %>
       <%= yield %>
     </div>
   </body>

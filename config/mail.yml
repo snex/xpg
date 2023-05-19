@@ -6,6 +6,10 @@ test:
   from: 'from@fake.fake'
   to:   'to@fake.fake'
 
+staging:
+  from: <%= ENV['MAIL_FROM'] %>
+  to:   <%= ENV['MAIL_TO'] %>
+
 production:
   from: <%= ENV['MAIL_FROM'] %>
   to:   <%= ENV['MAIL_TO'] %>

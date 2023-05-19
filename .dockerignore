@@ -1,4 +1,5 @@
 .bundle
+.env.docker
 .git
 .dockerignore
 .byebug_history
@@ -9,3 +10,4 @@ public/assets
 storage/*
 tmp/*
 wallets/*
+!wallets/**/.keep

@@ -321,7 +321,7 @@ RSpec.describe Wallet do
       before do
         allow(File).to receive(:read)
           .with('/proc/1/cmdline')
-          .and_return("monero-wallet-rpc --config-file=wallets/#{wallet.name}.config")
+          .and_return("monero-wallet-rpc --config-file=wallets/test/#{wallet.name}.config")
       end
 
       it { is_expected.to be true }

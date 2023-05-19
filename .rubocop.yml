@@ -24,6 +24,13 @@ Metrics/MethodLength:
     # auto-generated file
     - 'db/migrate/20230511201510_create_active_storage_tables.active_storage.rb'
 
+Rails/UnknownEnv:
+  Environments:
+    - development
+    - test
+    - staging
+    - production
+
 Style/HashSyntax:
   EnforcedShorthandSyntax: never
 

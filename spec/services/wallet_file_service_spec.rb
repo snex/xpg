@@ -29,14 +29,14 @@ RSpec.describe WalletFileService do
     end
 
     before do
-      allow(File).to receive(:open).with("wallets/#{wallet.name}.config", 'w').and_yield(io)
+      allow(File).to receive(:open).with("wallets/test/#{wallet.name}.config", 'w').and_yield(io)
       allow(FileUtils).to receive(:chmod)
     end
 
     it 'opens the wallet config file for writing' do
       write_config_file!
 
-      expect(File).to have_received(:open).with("wallets/#{wallet.name}.config", 'w').once
+      expect(File).to have_received(:open).with("wallets/test/#{wallet.name}.config", 'w').once
     end
 
     it 'writes config to the wallet config file' do
@@ -49,7 +49,7 @@ RSpec.describe WalletFileService do
     it 'changes the file permissions to rw for user only' do
       write_config_file!
 
-      expect(FileUtils).to have_received(:chmod).with('u=rw,go=-rwx', "wallets/#{wallet.name}.config").once
+      expect(FileUtils).to have_received(:chmod).with('u=rw,go=-rwx', "wallets/test/#{wallet.name}.config").once
     end
   end
 end

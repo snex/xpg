@@ -42,7 +42,7 @@ Rails.application.configure do
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
 
-  # Use a different cache store in production.
+  # Use a different cache store in staging.
   config.cache_store = :redis_cache_store
 
   config.action_mailer.perform_caching = false

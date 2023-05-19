@@ -6,13 +6,13 @@ module WalletFileService
   end
 
   def write_config_file!
-    File.open("wallets/#{@wallet.name}.config", 'w') do |f|
+    File.open("wallets/#{Rails.env}/#{@wallet.name}.config", 'w') do |f|
       config.split('&').each do |arg|
         f.puts arg.gsub(/%\w+%/, config_hash)
       end
     end
 
-    FileUtils.chmod('u=rw,go=-rwx', "wallets/#{@wallet.name}.config")
+    FileUtils.chmod('u=rw,go=-rwx', "wallets/#{Rails.env}/#{@wallet.name}.config")
   end
 
   private

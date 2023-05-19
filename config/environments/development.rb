@@ -81,5 +81,6 @@ Rails.application.configure do
   Rails.application.routes.default_url_options[:host] = 'localhost:3000'
   config.active_storage.service = :local
 
-  config.monero_daemon_port = ENV['MONERO_DAEMON_PORT'] || '38081'
+  config.monero_daemon = ENV.fetch('MONERO_DAEMON', 'stagenet.community.rino.io')
+  config.monero_daemon_port = ENV.fetch('MONERO_DAEMON_PORT', '38081')
 end
