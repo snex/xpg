@@ -86,7 +86,11 @@ GEM
       autoprefixer-rails (>= 9.1.0)
       popper_js (>= 2.11.6, < 3)
       sassc-rails (>= 2.0.0)
+    brakeman (5.4.1)
     builder (3.2.4)
+    bundler-audit (0.9.1)
+      bundler (>= 1.2.0, < 3)
+      thor (~> 1.0)
     chunky_png (1.4.0)
     concurrent-ruby (1.2.2)
     connection_pool (2.4.0)
@@ -319,6 +323,8 @@ PLATFORMS
 DEPENDENCIES
   bcrypt (~> 3.1.7)
   bootstrap
+  brakeman
+  bundler-audit
   debug
   dotenv-rails
   factory_bot_rails

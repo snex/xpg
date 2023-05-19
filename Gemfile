@@ -59,7 +59,8 @@ gem 'rqrcode'
 gem 'monero', git: 'https://github.com/snex/monero.git', branch: 'update_monero'
 
 group :development, :test do
-  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
+  gem 'brakeman'
+  gem 'bundler-audit',       require: false
   gem 'debug', platforms: %i[mri mingw x64_mingw]
   gem 'dotenv-rails'
   gem 'factory_bot_rails'

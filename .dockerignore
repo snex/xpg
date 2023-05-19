@@ -6,6 +6,7 @@
 .env.docker.example
 .git
 .gitattributes
+.github
 .gitignore
 .rspec
 .rubocop.yml
