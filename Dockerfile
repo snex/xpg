@@ -3,7 +3,7 @@ FROM ruby:3.2.1-alpine
 WORKDIR /app
 COPY . .
 
-ENV BUNDLER_WITHOUT development test
+ENV BUNDLER_WITHOUT "development:test"
 
 RUN apk add --update \
       build-base \
