@@ -18,12 +18,14 @@
 !/tmp/pids/
 !/tmp/pids/.keep
 
-/storage
-
 /public/assets
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+# ActiveStorage
+/storage/*
+!/storage/.keep
 
 # xmr wallet files
 /wallets/*

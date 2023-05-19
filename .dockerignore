@@ -1,13 +1,20 @@
-.bundle
-.env.docker
-.git
-.dockerignore
 .byebug_history
+.bundle
+.docker-compose.yml.production
+.env.docker
+.env.docker.example
+.git
+.gitattributes
+.gitignore
+.rspec
+.rubocop.yml
+.ruby-version
 README.md
 monero-wallet-rpc.log
-coverage/*
+coverage
 log/*
 public/assets
+spec
 storage/*
 tmp/*
 

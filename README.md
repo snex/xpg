@@ -6,11 +6,11 @@ You will need a Monero node. It is strongly advised for privacy reasons that you
 ## Installation
 ```bash
 docker pull snex00/xpg
-wget https://raw.githubusercontent.com/snex/xpg/master/docker-compose.yml
+wget https://raw.githubusercontent.com/snex/xpg/master/docker-compose.yml.production
 wget https://raw.githubusercontent.com/snex/xpg/master/.env.docker.example
 ```
 
-Edit the .env.docker.example file with the desired values, rename it to .env.docker, then run
+Rename docker-compose.yml.production to docker-compose.yml. Edit the .env.docker.example file with the desired values, rename it to .env.docker, then run
 ```
 docker compose up
 ```

@@ -15,7 +15,7 @@ services:
       - redis:/data
 
   web:
-    build: .
+    image: snex00/xpg:latest
     volumes:
       - wallets:/app/wallets
       - qr_codes:/app/storage
