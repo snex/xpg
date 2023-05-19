@@ -14,6 +14,7 @@ RSpec.describe HandlePaymentWitnessedJob, type: :job do
   it 'calls CallbackService.handle_payment_witnessed' do
     expect(CallbackService)
       .to have_received(:handle_payment_witnessed)
-      .with(payment.invoice.callback_url, payment.amount, payment.confirmations, payment.necessary_confirmations).once
+      .with(payment.invoice.callback_url, payment.amount.to_i, payment.confirmations, payment.necessary_confirmations)
+      .once
   end
 end
