@@ -1,5 +1,8 @@
 FROM ruby:3.2.1-alpine
 
+WORKDIR /app
+COPY . .
+
 RUN apk add --update \
       build-base \
       curl \
@@ -9,15 +12,13 @@ RUN apk add --update \
       postgresql-client \
       postgresql-dev \
       tzdata \
-      && rm -rf /var/cache/apk/*
-
-WORKDIR /app
-
-RUN gem install foreman
-COPY Gemfile Gemfile.lock ./
-RUN bundle install
-
-COPY . .
+    && gem install foreman \
+    && bundle install \
+    && apk --purge del \
+      apk-tools \
+      build-base \
+      postgresql-dev \
+    && rm -rf /etc/apk/cache
 
 EXPOSE 3000
 

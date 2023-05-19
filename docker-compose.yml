@@ -7,16 +7,12 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - postgres:/var/lib/postgresql/data
-    env_file:
-      - '.env.docker'
 
   redis:
     image: redis:alpine
     command: redis-server
     volumes:
       - redis:/data
-    env_file:
-      - '.env.docker'
 
   web:
     build: .
@@ -28,10 +24,10 @@ services:
     depends_on:
       - db
       - redis
-    env_file:
-      - '.env.docker'
     extra_hosts:
       - 'host.docker.internal:host-gateway'
+    env_file:
+      - '.env.docker'
 
 volumes:
   redis:
