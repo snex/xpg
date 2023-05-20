@@ -1,4 +1,8 @@
 # XPG Monero Payment Gateway
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/snex/xpg/rubyonrails.yml)
+![GitHub](https://img.shields.io/github/license/snex/xpg)
+
+Donate XMR - 481eZedQWukX66WAjAK2KJ8cgnnRJhzHKQvJdX8cJrPqbgJhicrf7reEv7F5EsT5BUaQ41AkBo1XBTHH4dCEY3kc4nY6it5
 
 ## Prerequisites
 You will need a Monero node. It is strongly advised for privacy reasons that you run your own, however a public node will work. You do not need a full node, a pruned node will work.
