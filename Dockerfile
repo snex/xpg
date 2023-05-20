@@ -3,6 +3,8 @@ FROM ruby:3.2.1-alpine
 WORKDIR /app
 COPY . .
 
+ENV BUNDLE_WITHOUT="development:test"
+
 RUN apk add --update \
       build-base \
       curl \
@@ -13,7 +15,7 @@ RUN apk add --update \
       postgresql-dev \
       tzdata \
     && gem install foreman \
-    && BUNDLER_WITHOUT="development:test" bundle install \
+    && bundle install \
     && apk --purge del \
       apk-tools \
       build-base \
