@@ -5,6 +5,10 @@ module Api
     class InvoicesController < ApiController
       wrap_parameters :invoice, include: %i[wallet_name amount external_id expires_at callback_url]
 
+      def show
+        @invoice = Invoice.find(params[:id])
+      end
+
       def create
         invoice_creator = InvoiceCreator.new(invoice_params)
 

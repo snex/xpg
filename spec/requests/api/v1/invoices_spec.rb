@@ -16,19 +16,38 @@ RSpec.describe 'api/v1/invoices' do
       amount: 'lolwut'
     }
   end
+  let(:rpc) { instance_double(MoneroRpcService) }
 
-  describe 'POST api/v1/create' do
-    let(:rpc) { instance_double(MoneroRpcService) }
+  # TODO: figure out a way to reduce the coupling here
+  before do
+    allow(MoneroRpcService).to receive(:new).and_return(rpc)
+    allow(rpc).to receive(:generate_incoming_address).and_return({ 'integrated_address' => '1234',
+                                                                   'payment_id'         => '4321' })
+    allow(rpc).to receive(:generate_uri).and_return('hello')
+    allow(rpc).to receive(:estimated_confirm_time).and_return(2.minutes)
+  end
 
-    # TODO: figure out a way to reduce the coupling here
-    before do
-      allow(MoneroRpcService).to receive(:new).and_return(rpc)
-      allow(rpc).to receive(:generate_incoming_address).and_return({ 'integrated_address' => '1234',
-                                                                     'payment_id'         => '4321' })
-      allow(rpc).to receive(:generate_uri).and_return('hello')
-      allow(rpc).to receive(:estimated_confirm_time).and_return(2.minutes)
+  describe 'GET api/v1/show' do
+    context 'when an invalid id is given' do
+      it 'renders not_found' do
+        get api_v1_invoice_url(0)
+
+        expect(response).to be_not_found
+      end
     end
 
+    context 'when a valid id is given' do
+      let(:invoice) { create(:invoice) }
+
+      it 'renders the invoice' do
+        get api_v1_invoice_url(invoice.id)
+
+        expect(response).to match_response_schema('invoice')
+      end
+    end
+  end
+
+  describe 'POST api/v1/create' do
     context 'with valid parameters' do
       it 'creates a new Invoice' do
         expect do

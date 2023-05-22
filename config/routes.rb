@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       post 'process_transaction', defaults: { format: :json }, to: 'payments#process_transaction'
-      resources :invoices, only: :create, defaults: { format: :json }
+      resources :invoices, only: %i[create show], defaults: { format: :json }
     end
   end
 
