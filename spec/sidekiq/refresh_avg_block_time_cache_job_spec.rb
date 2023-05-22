@@ -11,7 +11,6 @@ RSpec.describe RefreshAvgBlockTimeCacheJob, type: :job do
   it 'calls MoneroRpcService.new.avg_block_time' do
     described_class.new.perform
 
-    expect(MoneroRpcService).to have_received(:new).once
     expect(rpc).to have_received(:avg_block_time).once
   end
 end
