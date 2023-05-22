@@ -1,4 +1,4 @@
-FROM ruby:3.2.1-alpine-3.18
+FROM ruby:3.2.2-alpine
 
 WORKDIR /app
 COPY . .
