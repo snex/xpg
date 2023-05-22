@@ -8,6 +8,7 @@ ENV BUNDLE_WITHOUT="development:test"
 RUN apk add --update \
       build-base \
       curl \
+      gcompat \
       git \
       monero \
       nodejs \
