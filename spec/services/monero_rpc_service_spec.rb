@@ -8,6 +8,28 @@ RSpec.describe MoneroRpcService do
 
   before { allow(MoneroRPC).to receive(:new).and_return(rpc, drpc) }
 
+  describe '.new' do
+    subject(:new) { described_class.new(wallet) }
+
+    context 'when no wallet is supplied (drpc only)' do
+      let(:wallet) { nil }
+
+      it 'only creates the drpc client' do
+        new
+
+        expect(MoneroRPC).to have_received(:new).once
+      end
+    end
+
+    context 'when a wallet is supplied' do
+      it 'creates both the rpc and the drpc clients' do
+        new
+
+        expect(MoneroRPC).to have_received(:new).twice
+      end
+    end
+  end
+
   describe '#current_height' do
     subject(:current_height) { rpc_service.current_height }
 

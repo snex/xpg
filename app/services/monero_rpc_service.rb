@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class MoneroRpcService
-  def initialize(wallet)
+  def initialize(wallet = nil)
     @wallet = wallet
-    user, pass = @wallet.rpc_creds.split(':')
-    @rpc = MoneroRPC.new(host: '127.0.0.1', port: wallet.port, username: user, password: pass)
+    user, pass = @wallet.rpc_creds.split(':') if @wallet
+    @rpc = MoneroRPC.new(host: '127.0.0.1', port: wallet.port, username: user, password: pass) if @wallet
     @drpc = MoneroRPC.new(
       host:     Rails.application.config.monero_daemon,
       port:     Rails.application.config.monero_daemon_port,
