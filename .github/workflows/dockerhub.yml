@@ -32,6 +32,6 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          platforms: 'amd64,arm64,arm'
+          platforms: 'amd64,aarch64,arm'
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/xpg:latest
