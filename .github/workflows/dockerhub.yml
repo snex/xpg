@@ -12,7 +12,8 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v3
-      - name: Set up QEMU
+      -
+        name: Set up QEMU
         uses: docker/setup-qemu-action@v2
         with:
           platforms: 'amd64,arm64,arm'
