@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/snex/monero.git
-  revision: d338215bba53140b46cbd2e492f6cb8ebc430a94
+  revision: 2d6d0c06c01fac2273303d5e79a7505dbd371d87
   branch: update_monero
   specs:
     monero (0.0.16)
