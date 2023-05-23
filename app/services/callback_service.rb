@@ -13,14 +13,12 @@ class CallbackService
     Net::HTTP.post(@uri, @body, @headers)
   end
 
-  def self.handle_payment_witnessed(url, amount, confirmations, necessary_confirmations)
+  def self.handle_payment_witnessed(invoice)
     body = {
-      status:                  'payment_witnessed',
-      amount:                  amount,
-      confirmations:           confirmations,
-      necessary_confirmations: necessary_confirmations
+      status:   'payment_witnessed',
+      payments: invoice.payments_witnessed
     }
-    new(url, body).call
+    new(invoice.callback_url, body).call
   end
 
   def self.handle_payment_complete(url)

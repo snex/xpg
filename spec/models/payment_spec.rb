@@ -19,14 +19,10 @@ RSpec.describe Payment do
   describe '#confirmations' do
     subject { payment.confirmations }
 
-    let(:rpc) { instance_double(MoneroRpcService) }
-    let(:tx) { instance_double(MoneroRPC::IncomingTransfer) }
+    include_context 'when MoneroRpcService is needed'
+    include_context 'when MoneroRPC::IncomingTransfer is needed'
 
-    before do
-      allow(MoneroRpcService).to receive(:new).and_return(rpc)
-      allow(rpc).to receive(:transfer_details).and_return(tx)
-      allow(tx).to receive(:confirmations).and_return(1234)
-    end
+    before { allow(tx).to receive(:confirmations).and_return(1234) }
 
     it { is_expected.to eq(1234) }
   end
@@ -34,14 +30,10 @@ RSpec.describe Payment do
   describe '#suggested_confirmations_threshold' do
     subject { payment.suggested_confirmations_threshold }
 
-    let(:rpc) { instance_double(MoneroRpcService) }
-    let(:tx) { instance_double(MoneroRPC::IncomingTransfer) }
+    include_context 'when MoneroRpcService is needed'
+    include_context 'when MoneroRPC::IncomingTransfer is needed'
 
-    before do
-      allow(MoneroRpcService).to receive(:new).and_return(rpc)
-      allow(rpc).to receive(:transfer_details).and_return(tx)
-      allow(tx).to receive(:suggested_confirmations_threshold).and_return(4321)
-    end
+    before { allow(tx).to receive(:suggested_confirmations_threshold).and_return(4321) }
 
     it { is_expected.to eq(4321) }
   end
@@ -49,13 +41,8 @@ RSpec.describe Payment do
   describe '#confirmed?' do
     subject { payment.confirmed? }
 
-    let(:rpc) { instance_double(MoneroRpcService) }
-    let(:tx) { instance_double(MoneroRPC::IncomingTransfer) }
-
-    before do
-      allow(MoneroRpcService).to receive(:new).and_return(rpc)
-      allow(rpc).to receive(:transfer_details).and_return(tx)
-    end
+    include_context 'when MoneroRpcService is needed'
+    include_context 'when MoneroRPC::IncomingTransfer is needed'
 
     context 'when the transfer is confirmed' do
       before { allow(tx).to receive(:confirmed?).and_return(true) }
@@ -81,14 +68,10 @@ RSpec.describe Payment do
   describe 'necessary_confirmations' do
     subject { payment.necessary_confirmations }
 
-    let(:rpc) { instance_double(MoneroRpcService) }
-    let(:tx) { instance_double(MoneroRPC::IncomingTransfer) }
+    include_context 'when MoneroRpcService is needed'
+    include_context 'when MoneroRPC::IncomingTransfer is needed'
 
-    before do
-      allow(MoneroRpcService).to receive(:new).and_return(rpc)
-      allow(rpc).to receive(:transfer_details).and_return(tx)
-      allow(tx).to receive(:suggested_confirmations_threshold).and_return(confirmations)
-    end
+    before { allow(tx).to receive(:suggested_confirmations_threshold).and_return(confirmations) }
 
     context 'when the suggested_confirmations_threshold is 0' do
       let(:confirmations) { 0 }

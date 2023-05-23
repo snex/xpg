@@ -4,7 +4,9 @@ class CheckPaymentConfirmationsJob
   include Sidekiq::Job
 
   def perform(payment_id)
-    payment = Payment.find(payment_id)
+    payment = Payment.find_by(id: payment_id)
+
+    return if payment.blank?
 
     if payment.confirmed?
       CheckInvoicePaymentsJob.perform_async(payment.invoice.id)

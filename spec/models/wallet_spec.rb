@@ -77,13 +77,11 @@ RSpec.describe Wallet do
   describe '#create_rpc_wallet_file!' do
     subject(:create_rpc_wallet_file!) { wallet.create_rpc_wallet_file!('a', '1') }
 
-    let(:wallet) { build(:wallet, ready_to_run: false) }
-    let(:rpc) { instance_double(MoneroRpcService) }
+    include_context 'when MoneroRpcService is needed'
 
-    before do
-      allow(MoneroRpcService).to receive(:new).with(wallet).and_return(rpc)
-      allow(rpc).to receive(:create_rpc_wallet)
-    end
+    let(:wallet) { build(:wallet, ready_to_run: false) }
+
+    before { allow(rpc).to receive(:create_rpc_wallet) }
 
     it 'calls MoneroRpcService.new.create_rpc_wallet for the wallet' do
       create_rpc_wallet_file!
@@ -99,12 +97,9 @@ RSpec.describe Wallet do
   describe '#save_wallet_file!' do
     subject(:save_wallet_file!) { wallet.save_wallet_file! }
 
-    let(:rpc) { instance_double(MoneroRpcService) }
+    include_context 'when MoneroRpcService is needed'
 
-    before do
-      allow(MoneroRpcService).to receive(:new).with(wallet).and_return(rpc)
-      allow(rpc).to receive(:save_wallet)
-    end
+    before { allow(rpc).to receive(:save_wallet) }
 
     context 'when the wallet is not running' do
       before { allow(wallet).to receive(:running?).and_return(false) }
@@ -130,9 +125,7 @@ RSpec.describe Wallet do
   describe '#transfer_details' do
     subject(:transfer_details) { wallet.transfer_details('1234') }
 
-    let(:rpc) { instance_double(MoneroRpcService) }
-
-    before { allow(MoneroRpcService).to receive(:new).with(wallet).and_return(rpc) }
+    include_context 'when MoneroRpcService is needed'
 
     context 'when RPC creds have not been generated' do
       let(:wallet) { build(:wallet, rpc_creds: nil) }
@@ -168,14 +161,13 @@ RSpec.describe Wallet do
   describe '#process_transaction' do
     subject(:process_tx) { wallet.process_transaction('abcd') }
 
-    let(:rpc) { instance_double(MoneroRpcService) }
-    let(:tx_in) { instance_double(MoneroRPC::IncomingTransfer) }
+    include_context 'when MoneroRpcService is needed'
+    include_context 'when MoneroRPC::IncomingTransfer is needed'
 
     before do
-      allow(MoneroRpcService).to receive(:new).with(wallet).and_return(rpc)
-      allow(rpc).to receive(:transfer_details).and_return(tx_in)
-      allow(tx_in).to receive(:payment_id).and_return('1234')
-      allow(tx_in).to receive(:amount).and_return(1)
+      allow(rpc).to receive(:transfer_details).and_return(tx)
+      allow(tx).to receive(:payment_id).and_return('1234')
+      allow(tx).to receive(:amount).and_return(1)
     end
 
     context 'when the transaction has already been processed' do
@@ -197,7 +189,7 @@ RSpec.describe Wallet do
       it 'calls handle_invoiceless_payment' do
         process_tx
 
-        expect(wallet).to have_received(:handle_invoiceless_payment).with(tx_in).once
+        expect(wallet).to have_received(:handle_invoiceless_payment).with(tx).once
       end
 
       it 'does not create a Payment' do
@@ -214,7 +206,7 @@ RSpec.describe Wallet do
       it 'calls handle_invoiceless_payment' do
         process_tx
 
-        expect(wallet).to have_received(:handle_invoiceless_payment).with(tx_in).once
+        expect(wallet).to have_received(:handle_invoiceless_payment).with(tx).once
       end
 
       it 'does not create a Payment' do
@@ -225,8 +217,8 @@ RSpec.describe Wallet do
     context 'when there is an invoice with the incoming payment_id' do
       before do
         create(:invoice, wallet: wallet, payment_id: '1234')
-        allow(tx_in).to receive(:confirmations).and_return(nil)
-        allow(tx_in).to receive(:suggested_confirmations_threshold).and_return(2)
+        allow(tx).to receive(:confirmations).and_return(nil)
+        allow(tx).to receive(:suggested_confirmations_threshold).and_return(2)
       end
 
       it 'creates a Payment' do
@@ -242,19 +234,19 @@ RSpec.describe Wallet do
   end
 
   describe '#handle_invoiceless_payment' do
-    subject(:handle_invoiceless_payment) { wallet.handle_invoiceless_payment(tx_in) }
+    subject(:handle_invoiceless_payment) { wallet.handle_invoiceless_payment(tx) }
+
+    include_context 'when MoneroRpcService is needed'
+    include_context 'when MoneroRPC::IncomingTransfer is needed'
 
     let(:wallet) { create(:wallet) }
-    let(:rpc) { instance_double(MoneroRpcService) }
-    let(:tx_in) { instance_double(MoneroRPC::IncomingTransfer) }
 
     before do
-      allow(MoneroRpcService).to receive(:new).with(wallet).and_return(rpc)
-      allow(rpc).to receive(:transfer_details).and_return(tx_in)
-      allow(tx_in).to receive(:address).and_return('1234')
-      allow(tx_in).to receive(:payment_id).and_return('5678')
-      allow(tx_in).to receive(:amount).and_return(1)
-      allow(tx_in).to receive(:txid).and_return('lol')
+      allow(rpc).to receive(:transfer_details).and_return(tx)
+      allow(tx).to receive(:address).and_return('1234')
+      allow(tx).to receive(:payment_id).and_return('5678')
+      allow(tx).to receive(:amount).and_return(1)
+      allow(tx).to receive(:txid).and_return('lol')
     end
 
     context 'when mail is disabled' do

@@ -61,13 +61,11 @@ RSpec.describe Invoice do
   end
 
   describe 'before_create :generate_incoming_address' do
-    let(:rpc) { instance_double(MoneroRpcService) }
+    include_context 'when MoneroRpcService is needed'
+
     let(:generated_address) { { 'integrated_address' => '12345', 'payment_id' => '54321' } }
 
-    before do
-      allow(invoice).to receive(:monero_rpc_service).and_return(rpc)
-      allow(rpc).to receive(:generate_incoming_address).and_return(generated_address)
-    end
+    before { allow(rpc).to receive(:generate_incoming_address).and_return(generated_address) }
 
     context 'when an incoming_address and pay_mentent_id was provided' do
       let(:invoice) { build(:invoice, incoming_address: '54321', payment_id: '12345') }
@@ -95,12 +93,9 @@ RSpec.describe Invoice do
   end
 
   describe 'before_create :generate_qr_code' do
-    let(:rpc) { instance_double(MoneroRpcService) }
+    include_context 'when MoneroRpcService is needed'
 
-    before do
-      allow(MoneroRpcService).to receive(:new).and_return(rpc)
-      allow(rpc).to receive(:generate_uri).and_return('hello')
-    end
+    before { allow(rpc).to receive(:generate_uri).and_return('hello') }
 
     context 'when a QR code is already attached' do
       it 'does not overwrite the provided QR code' do
@@ -133,12 +128,9 @@ RSpec.describe Invoice do
   describe '#estimated_confirm_time' do
     subject(:estimated_confirm_time) { invoice.estimated_confirm_time }
 
-    let(:rpc) { instance_double(MoneroRpcService) }
+    include_context 'when MoneroRpcService is needed'
 
-    before do
-      allow(MoneroRpcService).to receive(:new).and_return(rpc)
-      allow(rpc).to receive(:estimated_confirm_time)
-    end
+    before { allow(rpc).to receive(:estimated_confirm_time) }
 
     it 'calls the MoneroRpcService' do
       estimated_confirm_time
@@ -286,6 +278,35 @@ RSpec.describe Invoice do
 
       it { is_expected.to be true }
     end
+  end
+
+  describe '#payments_witnessed' do
+    subject { invoice.payments_witnessed }
+
+    let!(:payments) do
+      [
+        create(:payment, invoice: invoice, amount: 7),
+        create(:payment, invoice: invoice, amount: 8)
+      ]
+    end
+    let(:ar) { Payment.none }
+    let(:expected) do
+      [
+        { amount: 7, confirmations: 1, necessary_confirmations: 2 },
+        { amount: 8, confirmations: 3, necessary_confirmations: 4 }
+      ]
+    end
+
+    before do
+      allow(payments[0]).to receive(:confirmations).and_return(1)
+      allow(payments[0]).to receive(:necessary_confirmations).and_return(2)
+      allow(payments[1]).to receive(:confirmations).and_return(3)
+      allow(payments[1]).to receive(:necessary_confirmations).and_return(4)
+      allow(invoice).to receive(:payments).and_return(ar)
+      allow(ar).to receive(:order).and_return(payments)
+    end
+
+    it { is_expected.to eq(expected) }
   end
 
   describe '#handle_payment_complete' do

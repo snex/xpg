@@ -50,6 +50,16 @@ class Invoice < ApplicationRecord
     unpaid? && amount_paid.positive?
   end
 
+  def payments_witnessed
+    payments.order(:created_at, :id).map do |payment|
+      {
+        amount:                  payment.amount.to_i,
+        confirmations:           payment.confirmations.to_i,
+        necessary_confirmations: payment.necessary_confirmations
+      }
+    end
+  end
+
   def handle_payment_complete
     CallbackService.handle_payment_complete(callback_url)
     gracefully_delete(skip_delete_paid: false)
