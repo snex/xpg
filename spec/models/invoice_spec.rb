@@ -288,6 +288,35 @@ RSpec.describe Invoice do
     end
   end
 
+  describe '#payments_witnessed' do
+    subject { invoice.payments_witnessed }
+
+    let!(:payments) do
+      [
+        create(:payment, invoice: invoice, amount: 7),
+        create(:payment, invoice: invoice, amount: 8)
+      ]
+    end
+    let(:ar) { Payment.none }
+    let(:expected) do
+      [
+        { amount: 7, confirmations: 1, necessary_confirmations: 2 },
+        { amount: 8, confirmations: 3, necessary_confirmations: 4 }
+      ]
+    end
+
+    before do
+      allow(payments[0]).to receive(:confirmations).and_return(1)
+      allow(payments[0]).to receive(:necessary_confirmations).and_return(2)
+      allow(payments[1]).to receive(:confirmations).and_return(3)
+      allow(payments[1]).to receive(:necessary_confirmations).and_return(4)
+      allow(invoice).to receive(:payments).and_return(ar)
+      allow(ar).to receive(:order).and_return(payments)
+    end
+
+    it { is_expected.to eq(expected) }
+  end
+
   describe '#handle_payment_complete' do
     subject(:handle_payment_complete) { invoice.handle_payment_complete }
 

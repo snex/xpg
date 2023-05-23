@@ -19,21 +19,31 @@ RSpec.describe CallbackService do
   end
 
   describe '.handle_payment_witnessed' do
-    subject(:handle_payment_witnessed) { described_class.handle_payment_witnessed(url, 1, 2, 3) }
+    subject(:handle_payment_witnessed) { described_class.handle_payment_witnessed(invoice) }
 
+    let(:invoice) { build(:invoice) }
     let(:expected_body) do
       {
-        status:                  'payment_witnessed',
-        amount:                  1,
-        confirmations:           2,
-        necessary_confirmations: 3
+        status:   'payment_witnessed',
+        payments: [
+          { amount: 1, confirmations: 2, necessary_confirmations: 3 },
+          { amount: 4, confirmations: 5, necessary_confirmations: 6 }
+        ]
       }
+    end
+
+    before do
+      allow(invoice).to receive(:payments_witnessed)
+        .and_return([
+                      { amount: 1, confirmations: 2, necessary_confirmations: 3 },
+                      { amount: 4, confirmations: 5, necessary_confirmations: 6 }
+                    ])
     end
 
     it 'calls Net::HTTP.post with the correct body' do
       handle_payment_witnessed
 
-      expect(Net::HTTP).to have_received(:post).with(URI.parse('http://www.google.com'), expected_body.to_json,
+      expect(Net::HTTP).to have_received(:post).with(URI.parse(invoice.callback_url), expected_body.to_json,
                                                      { 'Content-Type': 'application/json' }).once
     end
   end
