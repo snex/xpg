@@ -7,7 +7,8 @@
     "incoming_address",
     "payment_id",
     "qr_code",
-    "estimated_confirm_time"
+    "estimated_confirm_time",
+    "payments"
   ],
   "properties": {
     "id":                     { "type": "string", "format": "uuid" },
@@ -16,6 +17,22 @@
     "incoming_address":       { "type": "string" },
     "payment_id":             { "type": "string" },
     "qr_code":                { "type": "string", "format": "uri" },
-    "estimated_confirm_time": { "type": "integer" }
+    "estimated_confirm_time": { "type": "integer" },
+    "payments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "amount",
+          "confirmations",
+          "necessary_confirmations"
+        ],
+        "properties": {
+          "amount":                  { "type": "integer" },
+          "confirmations":           { "type": "integer" },
+          "necessary_confirmations": { "type": "integer" }
+        }
+      }
+    }
   }
 }

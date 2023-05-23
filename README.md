@@ -82,7 +82,7 @@ When a payment is seen on the monero network, XPG will send a POST to the callba
  }
 ```
 * AMOUNT is an integer and is the number of piconeros in the payment.
-* CONFIRMATIONS is an integer or "null" and represents the number of confirmations on the monero network have been seen. "null" means that the transaction is still in the mempool.
+* CONFIRMATIONS is an integer and represents the number of confirmations on the monero network have been seen.
 * NECESSARY_CONFIRMATIONS is the number of confirmations on the monero network that are required before this payment is considered confirmed. It should never go above 10.
 
 When all payments on an invoice are confirmed, XPG will send a POST to the callback URL with the following JSON body:

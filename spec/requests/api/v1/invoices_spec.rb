@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe 'api/v1/invoices' do
+  include_context 'when MoneroRpcService is needed'
+  include_context 'when MoneroRPC::IncomingTransfer is needed'
+
   let!(:wallet) { create(:wallet) }
   let(:valid_attributes) do
     {
@@ -16,15 +19,15 @@ RSpec.describe 'api/v1/invoices' do
       amount: 'lolwut'
     }
   end
-  let(:rpc) { instance_double(MoneroRpcService) }
 
   # TODO: figure out a way to reduce the coupling here
   before do
-    allow(MoneroRpcService).to receive(:new).and_return(rpc)
     allow(rpc).to receive(:generate_incoming_address).and_return({ 'integrated_address' => '1234',
                                                                    'payment_id'         => '4321' })
     allow(rpc).to receive(:generate_uri).and_return('hello')
     allow(rpc).to receive(:estimated_confirm_time).and_return(2.minutes)
+    allow(tx).to receive(:confirmations).and_return(nil, 1, 2)
+    allow(tx).to receive(:suggested_confirmations_threshold).and_return(1, 2, 20)
   end
 
   describe 'GET api/v1/show' do
@@ -37,7 +40,7 @@ RSpec.describe 'api/v1/invoices' do
     end
 
     context 'when a valid id is given' do
-      let(:invoice) { create(:invoice) }
+      let(:invoice) { create(:invoice, :with_payments) }
 
       it 'renders the invoice' do
         get api_v1_invoice_url(invoice.id)

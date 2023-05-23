@@ -61,13 +61,11 @@ RSpec.describe Invoice do
   end
 
   describe 'before_create :generate_incoming_address' do
-    let(:rpc) { instance_double(MoneroRpcService) }
+    include_context 'when MoneroRpcService is needed'
+
     let(:generated_address) { { 'integrated_address' => '12345', 'payment_id' => '54321' } }
 
-    before do
-      allow(invoice).to receive(:monero_rpc_service).and_return(rpc)
-      allow(rpc).to receive(:generate_incoming_address).and_return(generated_address)
-    end
+    before { allow(rpc).to receive(:generate_incoming_address).and_return(generated_address) }
 
     context 'when an incoming_address and pay_mentent_id was provided' do
       let(:invoice) { build(:invoice, incoming_address: '54321', payment_id: '12345') }
@@ -95,12 +93,9 @@ RSpec.describe Invoice do
   end
 
   describe 'before_create :generate_qr_code' do
-    let(:rpc) { instance_double(MoneroRpcService) }
+    include_context 'when MoneroRpcService is needed'
 
-    before do
-      allow(MoneroRpcService).to receive(:new).and_return(rpc)
-      allow(rpc).to receive(:generate_uri).and_return('hello')
-    end
+    before { allow(rpc).to receive(:generate_uri).and_return('hello') }
 
     context 'when a QR code is already attached' do
       it 'does not overwrite the provided QR code' do
@@ -133,12 +128,9 @@ RSpec.describe Invoice do
   describe '#estimated_confirm_time' do
     subject(:estimated_confirm_time) { invoice.estimated_confirm_time }
 
-    let(:rpc) { instance_double(MoneroRpcService) }
+    include_context 'when MoneroRpcService is needed'
 
-    before do
-      allow(MoneroRpcService).to receive(:new).and_return(rpc)
-      allow(rpc).to receive(:estimated_confirm_time)
-    end
+    before { allow(rpc).to receive(:estimated_confirm_time) }
 
     it 'calls the MoneroRpcService' do
       estimated_confirm_time

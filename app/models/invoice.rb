@@ -54,7 +54,7 @@ class Invoice < ApplicationRecord
     payments.order(:created_at, :id).map do |payment|
       {
         amount:                  payment.amount.to_i,
-        confirmations:           payment.confirmations,
+        confirmations:           payment.confirmations.to_i,
         necessary_confirmations: payment.necessary_confirmations
       }
     end

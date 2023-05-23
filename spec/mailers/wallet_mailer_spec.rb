@@ -2,13 +2,13 @@
 
 RSpec.describe WalletMailer do
   describe '#payment_without_invoice' do
+    include_context 'when MoneroRPC::IncomingTransfer is needed'
+
     let(:wallet) { build(:wallet, name: 'lolwallet') }
-    let(:tx) { instance_double(MoneroRPC::IncomingTransfer) }
     let(:mail) { described_class.with(wallet: wallet, transaction: tx).payment_without_invoice }
     let(:expected_body) { File.readlines('spec/support/mailers/wallet/payment_without_invoice.txt').join }
 
     before do
-      allow(wallet).to receive(:transfer_details).and_return(tx)
       allow(tx).to receive(:address).and_return('1234')
       allow(tx).to receive(:payment_id).and_return('5678')
       allow(tx).to receive(:amount).and_return(10)
