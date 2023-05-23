@@ -3,7 +3,22 @@
 RSpec.describe CheckPaymentConfirmationsJob, type: :job do
   let(:payment) { create(:payment) }
 
-  before { allow(Payment).to receive(:find).and_return(payment) }
+  before { allow(Payment).to receive(:find_by).and_return(payment) }
+
+  context 'when the payment has already been deleted' do
+    before do
+      allow(Payment).to receive(:find_by).and_return(nil)
+      described_class.new.perform(payment.id)
+    end
+
+    it 'does not enqueue a CheckInvoicePaymentsJob' do
+      expect(CheckInvoicePaymentsJob).not_to have_enqueued_sidekiq_job(payment.invoice.id)
+    end
+
+    it 'does not enqueue itself' do
+      expect(described_class).not_to have_enqueued_sidekiq_job(payment.id).in(30.seconds)
+    end
+  end
 
   context 'when the payment has been confirmed' do
     before { allow(payment).to receive(:confirmed?).and_return(true) }
