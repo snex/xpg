@@ -57,6 +57,7 @@ services:
   xpg:
     image: snex00/xpg:latest
     volumes:
+      - assets:/app/public/assets
       - qr_codes:/app/storage
     healthcheck:
       test: ["CMD", "curl", "-I", "HEAD", "http://localhost:3000"]
@@ -76,6 +77,7 @@ services:
       - '.env.docker'
 
 volumes:
+  assets:
   redis:
   postgres:
   qr_codes:
