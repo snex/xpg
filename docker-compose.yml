@@ -24,20 +24,54 @@ services:
     volumes:
       - redis:/data
 
-  web:
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      xpg:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+
+  sidekiq:
     image: snex00/xpg:latest
     volumes:
       - wallets:/app/wallets
-      - qr_codes:/app/storage
-    ports:
-      - "3000:3000"
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_healthy
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
+      xpg:
+        condition: service_healthy
+    command: ["bundle", "exec", "sidekiq", "-q", "default"]
+
+    # Since the monero RPC needs to be accessible on localhost, sidekiq scaling should only be done through
+    # the sidekiq concurrency option. You can only have ONE sidekiq container.
+    scale: 1
+    entrypoint: ''
+    env_file:
+      - '.env.docker'
+
+  xpg:
+    image: snex00/xpg:latest
+    volumes:
+      - qr_codes:/app/storage
+    healthcheck:
+      test: ["CMD", "curl", "-I", "HEAD", "http://localhost:3000"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: ["bundle", "exec", "puma", "-C", "config/puma.rb", "-p", "3000"]
+
+    # Feel free to scale this up to your heart's desire.
+    scale: 1
     env_file:
       - '.env.docker'
 
