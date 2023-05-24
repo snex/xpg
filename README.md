@@ -9,8 +9,8 @@ You will need a Monero node. It is strongly advised for privacy reasons that you
 
 ## Installation
 ```bash
-docker pull snex00/xpg
 wget https://raw.githubusercontent.com/snex/xpg/master/docker-compose.yml
+wget https://raw.githubusercontent.com/snex/xpg/master/nginx.conf
 wget https://raw.githubusercontent.com/snex/xpg/master/.env.docker.example
 ```
 

@@ -298,18 +298,28 @@ RSpec.describe Wallet do
     subject(:running?) { wallet.running? }
 
     context 'when pid is blank' do
+      let(:wallet) { build(:wallet, pid: nil) }
+
       it { is_expected.to be false }
     end
+
+    context 'when the pid is present' do
+      let(:wallet) { build(:wallet, pid: 1) }
+
+      it { is_expected.to be true }
+    end
+  end
+
+  describe '#update_pid!' do
+    subject(:update_pid!) { wallet.update_pid! }
 
     context 'when pid is present but no proc running' do
       let(:wallet) { build(:wallet, pid: 1) }
 
       before { allow(File).to receive(:read).with('/proc/1/cmdline').and_raise(Errno::ENOENT) }
 
-      it { is_expected.to be false }
-
       it 'updates pid to nil' do
-        expect { running? }.to change(wallet, :pid).from(1).to(nil)
+        expect { update_pid! }.to change(wallet, :pid).from(1).to(nil)
       end
     end
 
@@ -318,7 +328,9 @@ RSpec.describe Wallet do
 
       before { allow(File).to receive(:read).with('/proc/1/cmdline').and_return('junk') }
 
-      it { is_expected.to be false }
+      it 'updates pid to nil' do
+        expect { update_pid! }.to change(wallet, :pid).from(1).to(nil)
+      end
     end
 
     context 'when pid is present and proc has the correct details' do
@@ -330,7 +342,9 @@ RSpec.describe Wallet do
           .and_return("monero-wallet-rpc --config-file=wallets/test/#{wallet.name}.config")
       end
 
-      it { is_expected.to be true }
+      it 'does not update pid' do
+        expect { update_pid! }.not_to change(wallet, :pid)
+      end
     end
   end
 
