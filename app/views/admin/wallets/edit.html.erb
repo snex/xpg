@@ -1,6 +1,6 @@
 <h1><%= t('wallet.editing') %> <%= @wallet.name %></h1>
 
-<%= form_with(model: @wallet) do |form| %>
+<%= form_with(model: [:admin, @wallet]) do |form| %>
   <%= render 'form_errors', wallet: @wallet %>
   <div class="col-md-6">
     <%= form.label :port, class: 'form-label' %>
@@ -18,5 +18,5 @@
 <br>
 
 <div>
-  <%= link_to t('wallet.back'), wallets_path, class: 'link-dark' %>
+  <%= link_to t('wallet.back'), admin_wallets_path, class: 'link-dark' %>
 </div>

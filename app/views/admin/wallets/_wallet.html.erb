@@ -1,12 +1,12 @@
 <div id="<%= dom_id wallet %>" class="card col-lg-4">
   <div class="card-body">
     <h2 class="card-title">
-      <%= link_to fa_icon('pencil-square', text: wallet.name), edit_wallet_path(wallet), class: 'link-dark' %>
+      <%= link_to fa_icon('pencil-square', text: wallet.name), edit_admin_wallet_path(wallet), class: 'link-dark' %>
     </h2>
 
     <p>
     <strong><%= label(:wallet, :status) %>:</strong>
-    <span data-controller="wallet-status" data-wallet-status-url-value="<%= status_wallet_path(wallet.id) %>" data-wallet-status-refresh-interval-value="5000">
+    <span data-controller="wallet-status" data-wallet-status-url-value="<%= status_admin_wallet_path(wallet.id) %>" data-wallet-status-refresh-interval-value="5000">
       <span class="spinner-border spinner-border-sm" role="status" />
       </span>
     </p>

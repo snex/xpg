@@ -3,7 +3,15 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
-  mount Sidekiq::Web => '/sidekiq'
+  namespace :admin do
+    mount Sidekiq::Web => '/sidekiq'
+
+    resources :wallets, except: :show do
+      member do
+        get 'status'
+      end
+    end
+  end
 
   namespace :api do
     namespace :v1 do
@@ -11,12 +19,4 @@ Rails.application.routes.draw do
       resources :invoices, only: %i[create show], defaults: { format: :json }
     end
   end
-
-  resources :wallets, except: :show do
-    member do
-      get 'status'
-    end
-  end
-
-  root 'wallets#index'
 end
