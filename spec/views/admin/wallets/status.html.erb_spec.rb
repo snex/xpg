@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'wallets/status' do
+RSpec.describe 'admin/wallets/status' do
   let(:wallet) { create(:wallet) }
 
   before do

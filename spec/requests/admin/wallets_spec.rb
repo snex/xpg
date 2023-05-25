@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe '/wallets' do
+RSpec.describe '/admin/wallets' do
   let(:valid_attributes) do
     { address: 'a', view_key: '1', name: 'wallet', port: 1 }
   end
@@ -10,14 +10,14 @@ RSpec.describe '/wallets' do
 
   describe 'GET /index' do
     it 'renders a successful response' do
-      get wallets_url
+      get admin_wallets_url
       expect(response).to be_successful
     end
   end
 
   describe 'GET /new' do
     it 'renders a successful response' do
-      get new_wallet_url
+      get new_admin_wallet_url
       expect(response).to be_successful
     end
   end
@@ -26,7 +26,7 @@ RSpec.describe '/wallets' do
     let(:wallet) { create(:wallet) }
 
     it 'renders a successful response' do
-      get edit_wallet_url(wallet)
+      get edit_admin_wallet_url(wallet)
       expect(response).to be_successful
     end
   end
@@ -35,25 +35,25 @@ RSpec.describe '/wallets' do
     context 'with valid parameters' do
       it 'creates a new Wallet' do
         expect do
-          post wallets_url, params: { wallet: valid_attributes }
+          post admin_wallets_url, params: { wallet: valid_attributes }
         end.to change(Wallet, :count).by(1)
       end
 
       it 'redirects to the created wallet' do
-        post wallets_url, params: { wallet: valid_attributes }
-        expect(response).to redirect_to(wallets_url)
+        post admin_wallets_url, params: { wallet: valid_attributes }
+        expect(response).to redirect_to(admin_wallets_url)
       end
     end
 
     context 'with invalid parameters' do
       it 'does not create a new Wallet' do
         expect do
-          post wallets_url, params: { wallet: invalid_attributes }
+          post admin_wallets_url, params: { wallet: invalid_attributes }
         end.not_to change(Wallet, :count)
       end
 
       it 'renders a response with 422 status' do
-        post wallets_url, params: { wallet: invalid_attributes }
+        post admin_wallets_url, params: { wallet: invalid_attributes }
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
@@ -68,21 +68,21 @@ RSpec.describe '/wallets' do
       end
 
       it 'updates the requested wallet' do
-        patch wallet_url(wallet), params: { wallet: new_attributes }
+        patch admin_wallet_url(wallet), params: { wallet: new_attributes }
         wallet.reload
         expect(wallet.name).to eq('wallet2')
       end
 
       it 'redirects to the wallet' do
-        patch wallet_url(wallet), params: { wallet: new_attributes }
+        patch admin_wallet_url(wallet), params: { wallet: new_attributes }
         wallet.reload
-        expect(response).to redirect_to(wallets_url)
+        expect(response).to redirect_to(admin_wallets_url)
       end
     end
 
     context 'with invalid parameters' do
       it 'renders a response with 422 status' do
-        patch wallet_url(wallet), params: { wallet: invalid_attributes }
+        patch admin_wallet_url(wallet), params: { wallet: invalid_attributes }
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
@@ -93,13 +93,13 @@ RSpec.describe '/wallets' do
 
     it 'destroys the requested wallet' do
       expect do
-        delete wallet_url(wallet)
+        delete admin_wallet_url(wallet)
       end.to change(Wallet, :count).by(-1)
     end
 
     it 'redirects to the wallets list' do
-      delete wallet_url(wallet)
-      expect(response).to redirect_to(wallets_url)
+      delete admin_wallet_url(wallet)
+      expect(response).to redirect_to(admin_wallets_url)
     end
   end
 
@@ -107,7 +107,7 @@ RSpec.describe '/wallets' do
     let(:wallet) { create(:wallet) }
 
     it 'renders a successful response' do
-      get status_wallet_url(wallet)
+      get status_admin_wallet_url(wallet)
       expect(response).to be_successful
     end
   end

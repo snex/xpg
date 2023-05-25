@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'wallets/index' do
+RSpec.describe '/admin/wallets/index' do
   let(:wallets) do
     [
       create(:wallet, port: 12_345, default_expiry_ttl: 60),

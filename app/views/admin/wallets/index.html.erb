@@ -4,8 +4,8 @@
 
 <div id="wallets" class="row">
   <% @wallets.each do |wallet| %>
-    <%= render wallet %>
+    <%= render partial: '/admin/wallets/wallet', object: wallet %>
   <% end %>
 </div>
 
-<%= link_to t('wallet.new'), new_wallet_path, class: 'btn btn-dark' %>
+<%= link_to t('wallet.new'), new_admin_wallet_path, class: 'btn btn-dark' %>
