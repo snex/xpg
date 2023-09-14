@@ -42,7 +42,7 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 gem 'sassc-rails'
 
 # sidekiq
-gem 'sidekiq', '<7'
+gem 'sidekiq', '<8'
 gem 'sidekiq-scheduler'
 
 # Styling
