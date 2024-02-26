@@ -19,7 +19,7 @@ Edit the .env.docker.example file with the desired values, rename it to .env.doc
 docker compose up
 ```
 
-The app will be available at http://localhost:3000. You should ensure that this is never reachable via the internet, as the app currently assumes all network requests are authorized. There are plans to add HMAC auth in the future, but for now, just keep the app on the same local network as your web store and do not permit any outside network access to it.
+The app will be available at http://localhost:3000/admin/wallets. You should ensure that this is never reachable via the internet, as the app currently assumes all network requests are authorized. There are plans to add HMAC auth in the future, but for now, just keep the app on the same local network as your web store and do not permit any outside network access to it.
 
 From the web portal, you can set up any wallets you want. These will be view only wallets, so there is never a risk of losing your funds even if XPG is compromised.
 
