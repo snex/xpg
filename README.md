@@ -24,7 +24,7 @@ The app will be available at http://localhost:3000/admin/wallets. You should ens
 From the web portal, you can set up any wallets you want. These will be view only wallets, so there is never a risk of losing your funds even if XPG is compromised.
 
 ## Usage
-When a customer clicks on a "Pay With Monero" button at checkout (grab one [here](https://www.themonera.art/2017/09/22/monero-promotional-graphics-badges-and-stickers-for-websites/)), your app must create an invoice on XPG by performing an HTTP POST to http://localhost:3000/api/v1/invoice with the following JSON body:
+When a customer clicks on a "Pay With Monero" button at checkout (grab one [here](https://www.themonera.art/2017/09/22/monero-promotional-graphics-badges-and-stickers-for-websites/)), your app must create an invoice on XPG by performing an HTTP POST to http://localhost:3000/api/v1/invoices with the following JSON body:
 ```json
 {
   "invoice": {
