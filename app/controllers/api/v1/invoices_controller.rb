@@ -18,6 +18,8 @@ module Api
         else
           render json: { errors: invoice_creator.errors }, status: :unprocessable_entity
         end
+      rescue ActionDispatch::Http::Parameters::ParseError
+        render json: { errors: ['Unable to parse JSON body'] }, status: :unprocessable_entity
       end
 
       private
