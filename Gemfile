@@ -8,6 +8,16 @@ ruby '3.2.2'
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem 'rails', '~> 7.0.8', '>= 7.0.8.1'
 
+# nokogiri is now different per architecture so we need to require it here based on
+# different architecture, even though we don't even explicitly use nokogiri as it
+# is a requirement for rails.
+case RUBY_PLATFORM
+when 'aarch64-linux-gnu'
+  gem 'nokogiri', '1.18.3-aarch64-linux-gnu'
+when 'x86_64-linux'
+  gem 'nokogiri', '1.18.3-x86_64-linux-gnu'
+end
+
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem 'sprockets-rails'
 
