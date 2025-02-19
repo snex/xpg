@@ -164,6 +164,8 @@ GEM
     nio4r (2.7.3)
     nokogiri (1.18.3-aarch64-linux-gnu)
       racc (~> 1.4)
+    nokogiri (1.18.3-arm-linux-gnu)
+      racc (~> 1.4)
     nokogiri (1.18.3-x86_64-linux-gnu)
       racc (~> 1.4)
     parallel (1.23.0)
@@ -327,6 +329,9 @@ GEM
 
 PLATFORMS
   aarch64-linux
+  aarch64-linux-gnu
+  arm-linux
+  arm-linux-gnu
   x86_64-linux
 
 DEPENDENCIES
