@@ -349,7 +349,7 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.4.2)
-    uri (0.12.2)
+    uri (0.12.4)
     useragent (0.16.11)
     validate_url (1.0.15)
       activemodel (>= 3.0.0)
