@@ -76,7 +76,7 @@ RSpec.describe 'api/v1/invoices' do
 
       it 'renders a response with 422 status' do
         post api_v1_invoices_url, params: { invoice: invalid_attributes }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it 'renders a response in the correct schema' do
@@ -94,7 +94,7 @@ RSpec.describe 'api/v1/invoices' do
 
       it 'renders a response with 422 status' do
         post api_v1_invoices_url, headers: { 'Content-Type': 'application/json' }, params: malformed_params
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it 'renders a response in the correct schema' do

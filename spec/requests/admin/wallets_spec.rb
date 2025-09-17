@@ -54,7 +54,7 @@ RSpec.describe '/admin/wallets' do
 
       it 'renders a response with 422 status' do
         post admin_wallets_url, params: { wallet: invalid_attributes }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
   end
@@ -83,7 +83,7 @@ RSpec.describe '/admin/wallets' do
     context 'with invalid parameters' do
       it 'renders a response with 422 status' do
         patch admin_wallet_url(wallet), params: { wallet: invalid_attributes }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
   end
