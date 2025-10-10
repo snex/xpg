@@ -5,7 +5,7 @@ module Admin
     before_action :set_wallet, only: %i[edit update destroy status]
 
     def index
-      @wallets = Wallet.all.order(:id)
+      @wallets = Wallet.order(:id)
     end
 
     def new

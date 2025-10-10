@@ -9,10 +9,7 @@ RSpec.describe WalletMailer do
     let(:expected_body) { File.readlines('spec/support/mailers/wallet/payment_without_invoice.txt').join }
 
     before do
-      allow(tx).to receive(:address).and_return('1234')
-      allow(tx).to receive(:payment_id).and_return('5678')
-      allow(tx).to receive(:amount).and_return(10)
-      allow(tx).to receive(:txid).and_return('lol')
+      allow(tx).to receive_messages(address: '1234', payment_id: '5678', amount: 10, txid: 'lol')
     end
 
     it 'renders the sender' do

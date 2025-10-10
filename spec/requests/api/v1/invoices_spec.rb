@@ -25,10 +25,12 @@ RSpec.describe 'api/v1/invoices' do
 
   # TODO: figure out a way to reduce the coupling here
   before do
-    allow(rpc).to receive(:generate_incoming_address).and_return({ 'integrated_address' => '1234',
-                                                                   'payment_id'         => '4321' })
-    allow(rpc).to receive(:generate_uri).and_return('hello')
-    allow(rpc).to receive(:estimated_confirm_time).and_return(2.minutes)
+    allow(rpc).to receive_messages(
+      generate_incoming_address: { 'integrated_address' => '1234',
+                                   'payment_id'         => '4321' },
+      generate_uri:              'hello',
+      estimated_confirm_time:    2.minutes
+    )
     allow(tx).to receive(:confirmations).and_return(nil, 1, 2)
     allow(tx).to receive(:suggested_confirmations_threshold).and_return(1, 2, 20)
   end

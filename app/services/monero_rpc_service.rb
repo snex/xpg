@@ -38,9 +38,7 @@ class MoneroRpcService
     @rpc.stop_wallet
   end
 
-  def save_wallet
-    @rpc.save_wallet
-  end
+  delegate :save_wallet, to: :@rpc
 
   def generate_incoming_address
     @rpc.make_integrated_address

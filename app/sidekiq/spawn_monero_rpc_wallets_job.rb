@@ -4,7 +4,7 @@ class SpawnMoneroRpcWalletsJob
   include Sidekiq::Job
 
   def perform
-    Wallet.all.each do |wallet|
+    Wallet.find_each do |wallet|
       wallet.update_pid!
       MoneroRpcWalletJob.perform_async(wallet.id)
     end

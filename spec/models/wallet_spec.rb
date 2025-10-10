@@ -166,8 +166,7 @@ RSpec.describe Wallet do
 
     before do
       allow(rpc).to receive(:transfer_details).and_return(tx)
-      allow(tx).to receive(:payment_id).and_return('1234')
-      allow(tx).to receive(:amount).and_return(1)
+      allow(tx).to receive_messages(payment_id: '1234', amount: 1)
     end
 
     context 'when the transaction has already been processed' do
@@ -217,8 +216,7 @@ RSpec.describe Wallet do
     context 'when there is an invoice with the incoming payment_id' do
       before do
         create(:invoice, wallet: wallet, payment_id: '1234')
-        allow(tx).to receive(:confirmations).and_return(nil)
-        allow(tx).to receive(:suggested_confirmations_threshold).and_return(2)
+        allow(tx).to receive_messages(confirmations: nil, suggested_confirmations_threshold: 2)
       end
 
       it 'creates a Payment' do
@@ -243,10 +241,7 @@ RSpec.describe Wallet do
 
     before do
       allow(rpc).to receive(:transfer_details).and_return(tx)
-      allow(tx).to receive(:address).and_return('1234')
-      allow(tx).to receive(:payment_id).and_return('5678')
-      allow(tx).to receive(:amount).and_return(1)
-      allow(tx).to receive(:txid).and_return('lol')
+      allow(tx).to receive_messages(address: '1234', payment_id: '5678', amount: 1, txid: 'lol')
     end
 
     context 'when mail is disabled' do
@@ -277,8 +272,7 @@ RSpec.describe Wallet do
 
     context 'when the wallet is currently being built' do
       before do
-        allow(wallet).to receive(:running?).and_return(false)
-        allow(wallet).to receive(:ready_to_run?).and_return(false)
+        allow(wallet).to receive_messages(running?: false, ready_to_run?: false)
       end
 
       it { is_expected.to eq(:building) }
@@ -286,8 +280,7 @@ RSpec.describe Wallet do
 
     context 'when anything else happens' do
       before do
-        allow(wallet).to receive(:running?).and_return(false)
-        allow(wallet).to receive(:ready_to_run?).and_return(true)
+        allow(wallet).to receive_messages(running?: false, ready_to_run?: true)
       end
 
       it { is_expected.to eq(:error) }
