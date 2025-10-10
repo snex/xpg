@@ -22,8 +22,7 @@ RSpec.describe CheckInvoicePaymentsJob, type: :job do
 
   context 'when the invoice is overpaid' do
     before do
-      allow(invoice).to receive(:unpaid?).and_return(false)
-      allow(invoice).to receive(:overpaid?).and_return(true)
+      allow(invoice).to receive_messages(unpaid?: false, overpaid?: true)
       described_class.new.perform(invoice.id)
     end
 
@@ -38,9 +37,7 @@ RSpec.describe CheckInvoicePaymentsJob, type: :job do
 
   context 'when the invoice is paid exactly' do
     before do
-      allow(invoice).to receive(:unpaid?).and_return(false)
-      allow(invoice).to receive(:overpaid?).and_return(false)
-      allow(invoice).to receive(:paid?).and_return(true)
+      allow(invoice).to receive_messages(unpaid?: false, overpaid?: false, paid?: true)
       described_class.new.perform(invoice.id)
     end
 

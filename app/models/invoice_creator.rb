@@ -29,7 +29,9 @@ class InvoiceCreator
   end
 
   def wallet
-    @wallet ||= Wallet.find_by(name: wallet_name)
+    return @wallet if defined?(@wallet)
+
+    @wallet = Wallet.find_by(name: wallet_name)
   end
 
   private

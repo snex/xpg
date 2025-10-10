@@ -1,7 +1,8 @@
-require:
+plugins:
   - rubocop-factory_bot
   - rubocop-rails
   - rubocop-rspec
+  - rubocop-rspec_rails
 
 Style/Documentation:
   Enabled: false

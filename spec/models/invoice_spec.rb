@@ -263,8 +263,7 @@ RSpec.describe Invoice do
 
     context 'when invoice is not paid and amount_paid = 0' do
       before do
-        allow(invoice).to receive(:paid?).and_return(false)
-        allow(invoice).to receive(:amount_paid).and_return(0)
+        allow(invoice).to receive_messages(paid?: false, amount_paid: 0)
       end
 
       it { is_expected.to be false }
@@ -272,8 +271,7 @@ RSpec.describe Invoice do
 
     context 'when invoice is not paid and amount_paid > 0' do
       before do
-        allow(invoice).to receive(:paid?).and_return(false)
-        allow(invoice).to receive(:amount_paid).and_return(1)
+        allow(invoice).to receive_messages(paid?: false, amount_paid: 1)
       end
 
       it { is_expected.to be true }
@@ -298,10 +296,8 @@ RSpec.describe Invoice do
     end
 
     before do
-      allow(payments[0]).to receive(:confirmations).and_return(1)
-      allow(payments[0]).to receive(:necessary_confirmations).and_return(2)
-      allow(payments[1]).to receive(:confirmations).and_return(3)
-      allow(payments[1]).to receive(:necessary_confirmations).and_return(4)
+      allow(payments[0]).to receive_messages(confirmations: 1, necessary_confirmations: 2)
+      allow(payments[1]).to receive_messages(confirmations: 3, necessary_confirmations: 4)
       allow(invoice).to receive(:payments).and_return(ar)
       allow(ar).to receive(:order).and_return(payments)
     end
@@ -406,8 +402,7 @@ RSpec.describe Invoice do
 
     context 'when the invoice is paid and the skip_delete_paid override is true' do
       before do
-        allow(invoice).to receive(:paid_unconfirmed?).and_return(false)
-        allow(invoice).to receive(:paid?).and_return(true)
+        allow(invoice).to receive_messages(paid_unconfirmed?: false, paid?: true)
       end
 
       it 'does not destroy the payments' do
@@ -427,8 +422,7 @@ RSpec.describe Invoice do
       subject(:gracefully_delete) { invoice.gracefully_delete(skip_delete_paid: false) }
 
       before do
-        allow(invoice).to receive(:paid_unconfirmed?).and_return(false)
-        allow(invoice).to receive(:paid?).and_return(true)
+        allow(invoice).to receive_messages(paid_unconfirmed?: false, paid?: true)
       end
 
       it 'destroys the payments' do
@@ -446,8 +440,7 @@ RSpec.describe Invoice do
 
     context 'when the invoice is partially paid' do
       before do
-        allow(invoice).to receive(:partially_paid?).and_return(true)
-        allow(invoice).to receive(:paid?).and_return(false)
+        allow(invoice).to receive_messages(partially_paid?: true, paid?: false)
       end
 
       it 'calls handle_partial_payment' do
@@ -471,8 +464,7 @@ RSpec.describe Invoice do
 
     context 'when the invoice is not partially paid' do
       before do
-        allow(invoice).to receive(:partially_paid?).and_return(false)
-        allow(invoice).to receive(:paid?).and_return(false)
+        allow(invoice).to receive_messages(partially_paid?: false, paid?: false)
       end
 
       it 'does not call handle_partial_payment' do

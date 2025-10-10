@@ -4,7 +4,7 @@ RSpec.describe SpawnMoneroRpcWalletsJob, type: :job do
   let!(:wallet) { create(:wallet) }
 
   before do
-    allow(Wallet).to receive(:all).and_return([wallet])
+    allow(Wallet).to receive(:find_each).and_yield(wallet)
     allow(wallet).to receive(:update_pid!)
   end
 
